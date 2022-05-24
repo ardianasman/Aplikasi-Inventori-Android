@@ -24,10 +24,9 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Container(
           margin: EdgeInsets.all(8),
-          color: Colors.blue,
           child: Column(
             children: [
-              Text("test"),
+              Text("Inventory App"),
             ],
           ),
         ),
