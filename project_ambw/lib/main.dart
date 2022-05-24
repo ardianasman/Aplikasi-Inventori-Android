@@ -26,7 +26,7 @@ class _MyAppState extends State<MyApp> {
           margin: EdgeInsets.all(8),
           child: Column(
             children: [
-              Text("Inventory App"),
+              Text("Inventory App for Project AMBW"),
             ],
           ),
         ),
