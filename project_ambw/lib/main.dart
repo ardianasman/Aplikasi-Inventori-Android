@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -15,23 +17,24 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: "Inventory App",
-        home: Scaffold(
-          appBar: AppBar(
-            title: Text("Inventory App"),
+      title: "Inventory App",
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("Inventory App"),
+        ),
+        body: Container(
+          margin: EdgeInsets.all(8),
+          child: Column(
+            children: [
+              
+            ],
           ),
-          body: Container(
-            margin: EdgeInsets.all(8),
-            child: Column(
-              children: [
-                
-              ],
-            ),
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {},
-            child: Icon(Icons.add),
-          ),
-        ));
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          child: Icon(Icons.add),
+        ),
+      ),
+    );
   }
 }
