@@ -14,8 +14,21 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      
+    return MaterialApp(
+      title: "Inventory App",
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("Inventory App"),
+        ),
+        body: Container(
+          margin: EdgeInsets.all(8),
+          child: Column(
+            children: [
+              
+            ],
+          ),
+        ),
+      )
     );
   }
 }
