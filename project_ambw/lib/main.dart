@@ -75,14 +75,18 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton:
-            FloatingActionButton(child: Icon(Icons.add), onPressed: () {}),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          tooltip: 'Increment',
+          child: Icon(Icons.add),
+          elevation: 2.0,
+        ),
         bottomNavigationBar: BottomAppBar(
           shape: CircularNotchedRectangle(),
           child: Container(
             height: 56,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 IconButton(icon: Icon(Icons.home), onPressed: () {}),
                 IconButton(icon: Icon(Icons.search), onPressed: () {}),
