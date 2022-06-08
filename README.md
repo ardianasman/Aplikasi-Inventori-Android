@@ -17,12 +17,21 @@ Fungsi yang ada :
 Widget yang akan digunakan : list view builder, snackbar, expanded, dismissible
 
 Halaman
+
+Kerja bersama:
 - Login
 - Logout
-- Main page (list inventory barang berupa card)
+- Profile page
+
+Febri:
+- Main page ()
 - Detail data Page
+
+Leon:
 - Halaman supplier
 - Halaman detail supplier
+
+Ardian:
 - Halaman Jenis
 - Halaman detail jenis
-- Profile page
+
