@@ -88,11 +88,23 @@ class _MainScreenState extends State<MainScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                IconButton(icon: Icon(Icons.home), onPressed: () {}),
-                IconButton(icon: Icon(Icons.search), onPressed: () {}),
+                IconButton(
+                  icon: Icon(Icons.home),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: Icon(Icons.list),
+                  onPressed: () {},
+                ),
                 SizedBox(width: 40), // The dummy child
-                IconButton(icon: Icon(Icons.notifications), onPressed: () {}),
-                IconButton(icon: Icon(Icons.message), onPressed: () {}),
+                IconButton(
+                  icon: Icon(Icons.delivery_dining),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: Icon(Icons.person),
+                  onPressed: () {},
+                ),
               ],
             ),
           ),
