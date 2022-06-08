@@ -20,6 +20,9 @@ Halaman
 - Login
 - Logout
 - Main page (list inventory barang berupa card)
-- Halaman supplier dan jenis barang
 - Detail data Page
+- Halaman supplier
+- Halaman detail supplier
+- Halaman Jenis
+- Halaman detail jenis
 - Profile page
