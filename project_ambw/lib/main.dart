@@ -6,7 +6,6 @@ import 'package:page_transition/page_transition.dart';
 import 'package:project_ambw/login.dart';
 import 'package:project_ambw/profile.dart';
 
-
 void main() {
   runApp(const MyApp());
 }
@@ -30,7 +29,7 @@ class _MyAppState extends State<MyApp> {
           color: Colors.white,
           size: 150,
         ),
-        nextScreen: Login(),
+        nextScreen: MainScreen(),
         splashTransition: SplashTransition.fadeTransition,
         pageTransitionType: PageTransitionType.fade,
         backgroundColor: Color(0xFF264653),
@@ -40,12 +39,11 @@ class _MyAppState extends State<MyApp> {
 }
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({ Key? key }) : super(key: key);
+  const MainScreen({Key? key}) : super(key: key);
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
-
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
@@ -53,9 +51,9 @@ class _MainScreenState extends State<MainScreen> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-      if(index == 3){
-        Navigator.push(context,
-        MaterialPageRoute(builder: (builder) => Profile()));
+      if (index == 3) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (builder) => Profile()));
       }
     });
   }
@@ -76,38 +74,68 @@ class _MainScreenState extends State<MainScreen> {
             ],
           ),
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-          },
+          onPressed: () {},
+          tooltip: 'Increment',
           child: Icon(Icons.add),
+          elevation: 2.0,
         ),
-        bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-            backgroundColor: Colors.red,
+        bottomNavigationBar: BottomAppBar(
+          shape: CircularNotchedRectangle(),
+          child: Container(
+            height: 56,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.home),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: Icon(Icons.list),
+                  onPressed: () {},
+                ),
+                SizedBox(width: 40), // The dummy child
+                IconButton(
+                  icon: Icon(Icons.delivery_dining),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: Icon(Icons.person),
+                  onPressed: () {},
+                ),
+              ],
+            ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'Business',
-            backgroundColor: Colors.green,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Notifications',
-            backgroundColor: Colors.purple,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'Profile',
-            backgroundColor: Colors.pink,
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
-      ),
+        ),
+        // bottomNavigationBar: BottomNavigationBar(
+        //   items: const <BottomNavigationBarItem>[
+        //     BottomNavigationBarItem(
+        //       icon: Icon(Icons.home),
+        //       label: 'Home',
+        //       backgroundColor: Colors.red,
+        //     ),
+        //     BottomNavigationBarItem(
+        //       icon: Icon(Icons.business),
+        //       label: 'Business',
+        //       backgroundColor: Colors.green,
+        //     ),
+        //     BottomNavigationBarItem(
+        //       icon: Icon(Icons.notifications),
+        //       label: 'Notifications',
+        //       backgroundColor: Colors.purple,
+        //     ),
+        //     BottomNavigationBarItem(
+        //       icon: Icon(Icons.account_circle),
+        //       label: 'Profile',
+        //       backgroundColor: Colors.pink,
+        //     ),
+        //   ],
+        //   currentIndex: _selectedIndex,
+        //   selectedItemColor: Colors.amber[800],
+        //   onTap: _onItemTapped,
+        // ),
       ),
     );
   }
