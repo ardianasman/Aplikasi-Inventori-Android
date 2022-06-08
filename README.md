@@ -11,7 +11,15 @@ Database : Firebase
 
 Fungsi yang ada : 
 - CRUD stok barang
-- stok barang berisi : nama barang, foto barang, jumlah barang, tipe barang, supplier
+- stok barang berisi : nama barang, foto barang, tipe barang, detail barang, jumlah barang, supplier
 - Push notification WA (?)
 
 Widget yang akan digunakan : list view builder, snackbar, expanded, dismissible
+
+Halaman
+- Login
+- Logout
+- Main page (list inventory barang berupa card)
+- Halaman supplier dan jenis barang
+- Detail data Page
+- Profile page
