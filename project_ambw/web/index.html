@@ -1,6 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCHFe6p2ILs6ToLsfAVX5QPL7XFzBZRusE",
+      authDomain: "aplikasi-inventori-android.firebaseapp.com",
+      projectId: "aplikasi-inventori-android",
+      storageBucket: "aplikasi-inventori-android.appspot.com",
+      messagingSenderId: "253401132914",
+      appId: "1:253401132914:web:8689b228d41419d8b077eb",
+      measurementId: "G-RGM51VCC0M"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
   <!--
     If you are serving your web app in a path other than the root, change the
     href value below to reflect the base path you are serving from.

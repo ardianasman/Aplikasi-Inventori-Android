@@ -3,6 +3,7 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:project_ambw/login.dart';
 import 'package:project_ambw/profile.dart';
 
 
@@ -29,7 +30,7 @@ class _MyAppState extends State<MyApp> {
           color: Colors.white,
           size: 150,
         ),
-        nextScreen: MainScreen(),
+        nextScreen: Login(),
         splashTransition: SplashTransition.fadeTransition,
         pageTransitionType: PageTransitionType.fade,
         backgroundColor: Color(0xFF264653),
