@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:project_ambw/firebase_options.dart';
 import 'package:project_ambw/login.dart';
+import 'package:project_ambw/navbar.dart';
 import 'package:project_ambw/profile.dart';
 
 Future main() async {
@@ -41,7 +42,7 @@ class _MyAppState extends State<MyApp> {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return MyApp();
+              return Navbar();
             } else {
               return LoginPage();
             }
@@ -63,18 +64,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 0;
   int currentTab = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-      if (index == 3) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (builder) => Profile()));
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,88 +82,6 @@ class _MainScreenState extends State<MainScreen> {
             ],
           ),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          tooltip: 'Increment',
-          child: Icon(Icons.add),
-          elevation: 2.0,
-        ),
-        bottomNavigationBar: BottomAppBar(
-          shape: CircularNotchedRectangle(),
-          child: Container(
-            height: 56,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.home),
-                  color: currentTab == 0 ? Colors.blue : Colors.grey,
-                  onPressed: () {
-                    setState(() {
-                      currentTab = 0;
-                    });
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.search),
-                  color: currentTab == 1 ? Colors.blue : Colors.grey,
-                  onPressed: () {
-                    setState(() {
-                      currentTab = 1;
-                    });
-                  },
-                ),
-                SizedBox(width: 40), // The dummy child
-                IconButton(
-                  icon: Icon(Icons.notifications),
-                  color: currentTab == 2 ? Colors.blue : Colors.grey,
-                  onPressed: () {
-                    setState(() {
-                      currentTab = 2;
-                    });
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.message),
-                  color: currentTab == 3 ? Colors.blue : Colors.grey,
-                  onPressed: () {
-                    setState(() {
-                      currentTab = 3;
-                    });
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-        // bottomNavigationBar: BottomNavigationBar(
-        //   items: const <BottomNavigationBarItem>[
-        //     BottomNavigationBarItem(
-        //       icon: Icon(Icons.home),
-        //       label: 'Home',
-        //       backgroundColor: Colors.red,
-        //     ),
-        //     BottomNavigationBarItem(
-        //       icon: Icon(Icons.business),
-        //       label: 'Business',
-        //       backgroundColor: Colors.green,
-        //     ),
-        //     BottomNavigationBarItem(
-        //       icon: Icon(Icons.notifications),
-        //       label: 'Notifications',
-        //       backgroundColor: Colors.purple,
-        //     ),
-        //     BottomNavigationBarItem(
-        //       icon: Icon(Icons.account_circle),
-        //       label: 'Profile',
-        //       backgroundColor: Colors.pink,
-        //     ),
-        //   ],
-        //   currentIndex: _selectedIndex,
-        //   selectedItemColor: Colors.amber[800],
-        //   onTap: _onItemTapped,
-        // ),
       ),
     );
   }

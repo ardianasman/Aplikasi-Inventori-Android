@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({ Key? key }) : super(key: key);
+  const Profile({Key? key}) : super(key: key);
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -15,8 +15,7 @@ class _ProfileState extends State<Profile> {
       home: Scaffold(
         body: Container(
           padding: EdgeInsets.all(24),
-          child:
-          Column(
+          child: Column(
             children: [
               Row(
                 children: [
@@ -26,7 +25,10 @@ class _ProfileState extends State<Profile> {
                       color: Colors.red,
                       child: Row(
                         children: [
-                          Icon(Icons.arrow_back_ios,size: 28,),
+                          Icon(
+                            Icons.arrow_back_ios,
+                            size: 28,
+                          ),
                         ],
                       ),
                     ),
@@ -37,20 +39,33 @@ class _ProfileState extends State<Profile> {
                       color: Colors.blue,
                       child: Row(
                         children: [
-                          Text("Profile", textAlign: TextAlign.center ,style: TextStyle(fontSize: 28,),)
+                          Text(
+                            "Profile",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 28,
+                            ),
+                          )
                         ],
                       ),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 75,),
+              SizedBox(
+                height: 75,
+              ),
               Row(
                 children: [
                   Row(
                     children: [
-                      SizedBox(width: 25,),
-                      Icon(Icons.account_circle, size: 115,),
+                      SizedBox(
+                        width: 25,
+                      ),
+                      Icon(
+                        Icons.account_circle,
+                        size: 115,
+                      ),
                     ],
                   ),
                   Row(
@@ -64,7 +79,7 @@ class _ProfileState extends State<Profile> {
                     ],
                   )
                 ],
-              )
+              ),
             ],
           ),
         ),
