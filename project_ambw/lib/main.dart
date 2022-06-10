@@ -1,12 +1,15 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:project_ambw/login.dart';
 import 'package:project_ambw/profile.dart';
 
-void main() {
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(const MyApp());
 }
 
@@ -47,6 +50,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
+  int currentTab = 0;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -90,20 +94,40 @@ class _MainScreenState extends State<MainScreen> {
               children: <Widget>[
                 IconButton(
                   icon: Icon(Icons.home),
-                  onPressed: () {},
+                  color: currentTab == 0 ? Colors.blue : Colors.grey,
+                  onPressed: () {
+                    setState(() {
+                      currentTab = 0;
+                    });
+                  },
                 ),
                 IconButton(
-                  icon: Icon(Icons.list),
-                  onPressed: () {},
+                  icon: Icon(Icons.search),
+                  color: currentTab == 1 ? Colors.blue : Colors.grey,
+                  onPressed: () {
+                    setState(() {
+                      currentTab = 1;
+                    });
+                  },
                 ),
                 SizedBox(width: 40), // The dummy child
                 IconButton(
-                  icon: Icon(Icons.delivery_dining),
-                  onPressed: () {},
+                  icon: Icon(Icons.notifications),
+                  color: currentTab == 2 ? Colors.blue : Colors.grey,
+                  onPressed: () {
+                    setState(() {
+                      currentTab = 2;
+                    });
+                  },
                 ),
                 IconButton(
-                  icon: Icon(Icons.person),
-                  onPressed: () {},
+                  icon: Icon(Icons.message),
+                  color: currentTab == 3 ? Colors.blue : Colors.grey,
+                  onPressed: () {
+                    setState(() {
+                      currentTab = 3;
+                    });
+                  },
                 ),
               ],
             ),
