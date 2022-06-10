@@ -30,9 +30,10 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'App Inventory',
       home: AnimatedSplashScreen(
-        duration: 5000,
+        duration: 2000,
         splash: Icon(
           Icons.inventory_sharp,
           color: Colors.white,
@@ -69,10 +70,27 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Inventory App",
+      debugShowCheckedModeBanner: false,
+      title: "Inventory App - Home",
       home: Scaffold(
         appBar: AppBar(
-          title: Text("Inventory App"),
+          centerTitle: true,
+          title: Text("Home - Inventory App"),
+          actions: [
+            IconButton(
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Logged out from ${FirebaseAuth.instance.currentUser?.email}!',
+                    ),
+                  ),
+                );
+              },
+              icon: Icon(Icons.logout),
+            )
+          ],
         ),
         body: Container(
           margin: EdgeInsets.all(8),

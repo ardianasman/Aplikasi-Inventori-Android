@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:project_ambw/jenis.dart';
 import 'package:project_ambw/main.dart';
 import 'package:project_ambw/profile.dart';
+import 'package:project_ambw/supplier.dart';
 
 class Navbar extends StatefulWidget {
   const Navbar({Key? key}) : super(key: key);
@@ -13,8 +15,8 @@ class _NavbarState extends State<Navbar> {
   int currentTab = 0;
   List<Widget> pageList = <Widget>[
     MainScreen(),
-    MainScreen(),
-    MainScreen(),
+    Jenis(),
+    Supplier(),
     Profile(),
   ];
 
@@ -38,6 +40,7 @@ class _NavbarState extends State<Navbar> {
             children: <Widget>[
               IconButton(
                 icon: Icon(Icons.home),
+                tooltip: "Home",
                 color: currentTab == 0 ? Colors.blue : Colors.grey,
                 onPressed: () {
                   setState(() {
@@ -46,8 +49,9 @@ class _NavbarState extends State<Navbar> {
                 },
               ),
               IconButton(
-                icon: Icon(Icons.search),
+                icon: Icon(Icons.factory),
                 color: currentTab == 1 ? Colors.blue : Colors.grey,
+                tooltip: "Supplier",
                 onPressed: () {
                   setState(() {
                     currentTab = 1;
@@ -56,8 +60,9 @@ class _NavbarState extends State<Navbar> {
               ),
               SizedBox(width: 40), // The dummy child
               IconButton(
-                icon: Icon(Icons.notifications),
+                icon: Icon(Icons.list),
                 color: currentTab == 2 ? Colors.blue : Colors.grey,
+                tooltip: "Category",
                 onPressed: () {
                   setState(() {
                     currentTab = 2;
@@ -67,6 +72,7 @@ class _NavbarState extends State<Navbar> {
               IconButton(
                 icon: Icon(Icons.account_circle_outlined),
                 color: currentTab == 3 ? Colors.blue : Colors.grey,
+                tooltip: "Profile",
                 onPressed: () {
                   setState(() {
                     currentTab = 3;

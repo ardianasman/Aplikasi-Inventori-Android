@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -21,10 +22,37 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future signIn() async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: emailController.text,
-      password: passwordController.text,
-    );
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Logged in as ${emailController.text}',
+          ),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'No user found for that email!',
+            ),
+          ),
+        );
+      } else if (e.code == 'wrong-password') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Wrong password!',
+            ),
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -35,22 +63,37 @@ class _LoginPageState extends State<LoginPage> {
           child: ListView(
             children: <Widget>[
               Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10),
-                  child: const Text(
-                    'Inventory',
-                    style: TextStyle(
+                alignment: Alignment.center,
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.inventory_sharp,
+                      color: Colors.blue,
+                      size: 50,
+                    ),
+                    Text(
+                      'Inventory App',
+                      style: TextStyle(
                         color: Colors.blue,
                         fontWeight: FontWeight.w500,
-                        fontSize: 30),
-                  )),
+                        fontSize: 30,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 16,
+              ),
               Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10),
-                  child: const Text(
-                    'Sign in',
-                    style: TextStyle(fontSize: 20),
-                  )),
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(10),
+                child: const Text(
+                  'Sign in',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ),
               Container(
                 padding: const EdgeInsets.all(10),
                 child: TextField(
@@ -72,6 +115,9 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
+              SizedBox(
+                height: 40,
+              ),
               TextButton(
                 onPressed: () {
                   //forgot password screen
@@ -80,24 +126,31 @@ class _LoginPageState extends State<LoginPage> {
                   'Forgot Password',
                 ),
               ),
+              SizedBox(
+                height: 16,
+              ),
               Container(
-                  height: 50,
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: ElevatedButton(
-                    child: const Text('Login'),
-                    onPressed: () {
-                      print(emailController.text);
-                      print(passwordController.text);
-                      signIn();
-                    },
-                  )),
+                height: 50,
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: ElevatedButton(
+                  child: const Text('Login'),
+                  onPressed: () {
+                    print(emailController.text);
+                    print(passwordController.text);
+                    signIn();
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 16,
+              ),
               Row(
                 children: <Widget>[
                   const Text('Does not have account?'),
                   TextButton(
                     child: const Text(
                       'Sign in',
-                      style: TextStyle(fontSize: 20),
+                      style: TextStyle(fontSize: 16),
                     ),
                     onPressed: () {
                       //signup screen

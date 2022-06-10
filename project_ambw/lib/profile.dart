@@ -16,70 +16,56 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Profile",
+      debugShowCheckedModeBanner: false,
+      title: "Inventory App - Profile",
       home: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text("Profile - Inventory App"),
+          actions: [
+            IconButton(
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Logged out from $currentuser!',
+                    ),
+                  ),
+                );
+              },
+              icon: Icon(Icons.logout),
+            )
+          ],
+        ),
         body: Container(
           padding: EdgeInsets.all(24),
           child: Column(
             children: [
-              Row(
+              Column(
                 children: [
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      color: Colors.red,
-                      child: Row(
+                  Row(
+                    children: [
+                      Row(
                         children: [
+                          SizedBox(
+                            width: 25,
+                          ),
                           Icon(
-                            Icons.arrow_back_ios,
-                            size: 28,
+                            Icons.account_circle,
+                            size: 115,
                           ),
                         ],
                       ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Container(
-                      color: Colors.blue,
-                      child: Row(
+                      Row(
                         children: [
-                          Text(
-                            "Profile",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 28,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 75,
-              ),
-              Row(
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 25,
-                      ),
-                      Icon(
-                        Icons.account_circle,
-                        size: 115,
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Column(
-                        children: [
-                          Text("nama"),
-                          Text("nomer"),
-                          Text(currentUser.toString()),
+                          Column(
+                            children: [
+                              Text("nama"),
+                              Text("nomer"),
+                              Text(currentUser.toString()),
+                            ],
+                          ),
                         ],
                       ),
                     ],
@@ -88,6 +74,13 @@ class _ProfileState extends State<Profile> {
                     child: const Text('Logout'),
                     onPressed: () {
                       FirebaseAuth.instance.signOut();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Logged out from $currentuser!',
+                          ),
+                        ),
+                      );
                     },
                   ),
                 ],
