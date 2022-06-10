@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -8,6 +10,9 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  late User currentuser;
+  final String? currentUser = FirebaseAuth.instance.currentUser?.email;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -74,10 +79,17 @@ class _ProfileState extends State<Profile> {
                         children: [
                           Text("nama"),
                           Text("nomer"),
+                          Text(currentUser.toString()),
                         ],
                       ),
                     ],
-                  )
+                  ),
+                  ElevatedButton(
+                    child: const Text('Logout'),
+                    onPressed: () {
+                      FirebaseAuth.instance.signOut();
+                    },
+                  ),
                 ],
               ),
             ],
