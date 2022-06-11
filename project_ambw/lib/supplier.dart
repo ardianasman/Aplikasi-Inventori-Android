@@ -1,8 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 import 'package:project_ambw/aboutus.dart';
 import 'package:project_ambw/detailsupplier.dart';
-import 'package:project_ambw/profile.dart';
 
 class Supplier extends StatefulWidget {
   const Supplier({Key? key}) : super(key: key);

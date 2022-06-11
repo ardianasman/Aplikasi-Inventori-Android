@@ -1,8 +1,9 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_ambw/aboutus.dart';
 import 'package:project_ambw/detailstok.dart';
-import 'package:project_ambw/profile.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);

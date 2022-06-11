@@ -1,6 +1,7 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -12,6 +13,46 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   late User currentuser;
   final String? currentUser = FirebaseAuth.instance.currentUser?.email;
+
+  void logOut() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Do you want to log out?"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text("No"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              FirebaseAuth.instance.signOut();
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text("Logged out from $currentUser!"),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        "OK",
+                      ),
+                    )
+                  ],
+                ),
+              );
+            },
+            child: Text("Yes"),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +67,7 @@ class _ProfileState extends State<Profile> {
               margin: EdgeInsets.only(right: 8),
               child: IconButton(
                 onPressed: () {
-                  FirebaseAuth.instance.signOut();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Logged out from $currentuser!',
-                      ),
-                    ),
-                  );
+                  logOut();
                 },
                 icon: Icon(Icons.logout),
               ),
@@ -64,14 +98,7 @@ class _ProfileState extends State<Profile> {
                   ElevatedButton(
                     child: const Text('Logout'),
                     onPressed: () {
-                      FirebaseAuth.instance.signOut();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'Logged out from $currentuser!',
-                          ),
-                        ),
-                      );
+                      logOut();
                     },
                   ),
                 ],
