@@ -80,14 +80,16 @@ class _RegisterState extends State<Register> {
                 // ignore: prefer_const_constructors
                 child: TextField(
                   obscureText: _obsecureText,
-                  //controller: passwordController,
+                  // controller: passwordController,
                   decoration: InputDecoration(
-                    suffixIcon: GestureDetector(
-                      onTap: () {
-                        togglePassword();
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _obsecureText = !_obsecureText;
+                        });
                       },
-                      child: Icon(
-                        _obsecureText ? Icons.visibility : Icons.visibility_off,
+                      icon: Icon(
+                        _obsecureText ? Icons.visibility_off : Icons.visibility,
                       ),
                     ),
                     border: OutlineInputBorder(),
@@ -103,14 +105,18 @@ class _RegisterState extends State<Register> {
                 padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                 child: TextField(
                   obscureText: _obsecureTextConfirm,
-                  //controller: passwordController,
+                  // controller: passwordController,
                   decoration: InputDecoration(
-                    suffixIcon: GestureDetector(
-                      onTap: () {
-                        togglePasswordConfirm();
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _obsecureTextConfirm = !_obsecureTextConfirm;
+                        });
                       },
-                      child: Icon(
-                        _obsecureText ? Icons.visibility : Icons.visibility_off,
+                      icon: Icon(
+                        _obsecureTextConfirm
+                            ? Icons.visibility_off
+                            : Icons.visibility,
                       ),
                     ),
                     border: OutlineInputBorder(),
