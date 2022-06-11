@@ -17,55 +17,46 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Inventory App - Profile",
+      title: "Inventory App | Profile",
       home: Scaffold(
         appBar: AppBar(
-          centerTitle: true,
-          title: Text("Profile - Inventory App"),
+          title: Text("Inventory App | Profile"),
           actions: [
-            IconButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Logged out from $currentuser!',
+            Container(
+              margin: EdgeInsets.only(right: 8),
+              child: IconButton(
+                onPressed: () {
+                  FirebaseAuth.instance.signOut();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Logged out from $currentuser!',
+                      ),
                     ),
-                  ),
-                );
-              },
-              icon: Icon(Icons.logout),
+                  );
+                },
+                icon: Icon(Icons.logout),
+              ),
             )
           ],
         ),
         body: Container(
-          padding: EdgeInsets.all(24),
+          margin: EdgeInsets.all(8),
           child: Column(
             children: [
               Column(
                 children: [
+                  Icon(
+                    Icons.account_circle,
+                    size: 115,
+                  ),
                   Row(
                     children: [
-                      Row(
+                      Column(
                         children: [
-                          SizedBox(
-                            width: 25,
-                          ),
-                          Icon(
-                            Icons.account_circle,
-                            size: 115,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Column(
-                            children: [
-                              Text("nama"),
-                              Text("nomer"),
-                              Text(currentUser.toString()),
-                            ],
-                          ),
+                          Text("nama"),
+                          Text("nomer"),
+                          Text(currentUser.toString()),
                         ],
                       ),
                     ],

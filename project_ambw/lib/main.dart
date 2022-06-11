@@ -6,9 +6,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:project_ambw/firebase_options.dart';
+import 'package:project_ambw/jenis.dart';
 import 'package:project_ambw/login.dart';
-import 'package:project_ambw/navbar.dart';
+import 'package:project_ambw/home.dart';
 import 'package:project_ambw/profile.dart';
+import 'package:project_ambw/supplier.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,7 +45,7 @@ class _MyAppState extends State<MyApp> {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return Navbar();
+              return MainPage();
             } else {
               return LoginPage();
             }
@@ -57,48 +59,61 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({Key? key}) : super(key: key);
+class MainPage extends StatefulWidget {
+  const MainPage({Key? key}) : super(key: key);
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<MainPage> createState() => _MainPageState();
 }
 
-class _MainScreenState extends State<MainScreen> {
-  int currentTab = 0;
+class _MainPageState extends State<MainPage> {
+  int currentindex = 0;
+  final pageList = [
+    Home(),
+    Jenis(),
+    Supplier(),
+    Profile(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Inventory App - Home",
       home: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text("Home - Inventory App"),
-          actions: [
-            IconButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Logged out from ${FirebaseAuth.instance.currentUser?.email}!',
-                    ),
-                  ),
-                );
-              },
-              icon: Icon(Icons.logout),
-            )
-          ],
+        body: IndexedStack(
+          index: currentindex,
+          children: pageList,
         ),
-        body: Container(
-          margin: EdgeInsets.all(8),
-          child: Column(
-            children: [
-              Text("Inventory App for Project AMBW"),
-            ],
-          ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: currentindex,
+          onTap: (index) => setState(() => currentindex = index),
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.blue,
+          selectedItemColor: Colors.white,
+          selectedFontSize: 16,
+          unselectedItemColor: Colors.white70,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: "Home",
+              tooltip: "Home",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.factory),
+              label: "Supplier",
+              tooltip: "Supplier",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.list),
+              label: "Category",
+              tooltip: "Category",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.account_circle_outlined),
+              label: "Profile",
+              tooltip: "Profile - ${FirebaseAuth.instance.currentUser?.email}",
+            ),
+          ],
         ),
       ),
     );

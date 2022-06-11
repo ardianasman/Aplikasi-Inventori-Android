@@ -1,25 +1,25 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_ambw/aboutus.dart';
-import 'package:project_ambw/detailjenis.dart';
+import 'package:project_ambw/detailstok.dart';
 import 'package:project_ambw/profile.dart';
 
-class Jenis extends StatefulWidget {
-  const Jenis({Key? key}) : super(key: key);
+class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
 
   @override
-  State<Jenis> createState() => _JenisState();
+  State<Home> createState() => _HomeState();
 }
 
-class _JenisState extends State<Jenis> {
+class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Inventory App | Jenis",
+      title: "Inventory App | Home",
       home: Scaffold(
         appBar: AppBar(
-          title: Text("Inventory App | Jenis"),
+          title: Text("Inventory App | Home"),
           actions: [
             Container(
               margin: EdgeInsets.only(right: 8),
@@ -41,8 +41,19 @@ class _JenisState extends State<Jenis> {
         body: Container(
           margin: EdgeInsets.all(8),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Ini halaman jenis"),
+              Text(
+                "Welcome ${FirebaseAuth.instance.currentUser?.email}!",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              Text("Ini halaman home"),
             ],
           ),
         ),
@@ -51,7 +62,7 @@ class _JenisState extends State<Jenis> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => DetailJenis(),
+                builder: (context) => DetailStok(),
               ),
             );
           },

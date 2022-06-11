@@ -1,5 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:project_ambw/aboutus.dart';
+import 'package:project_ambw/detailsupplier.dart';
+import 'package:project_ambw/profile.dart';
 
 class Supplier extends StatefulWidget {
   const Supplier({Key? key}) : super(key: key);
@@ -13,25 +16,26 @@ class _SupplierState extends State<Supplier> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Inventory App - Supplier",
+      title: "Inventory App | Supplier",
       home: Scaffold(
         appBar: AppBar(
-          centerTitle: true,
-          title: Text("Supplier - Inventory App"),
+          title: Text("Inventory App | Supplier"),
           actions: [
-            IconButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Logged out from ${FirebaseAuth.instance.currentUser?.email}!',
+            Container(
+              margin: EdgeInsets.only(right: 8),
+              child: IconButton(
+                tooltip: "About Us",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AboutUs(),
                     ),
-                  ),
-                );
-              },
-              icon: Icon(Icons.logout),
-            )
+                  );
+                },
+                icon: Icon(Icons.perm_device_information),
+              ),
+            ),
           ],
         ),
         body: Container(
@@ -41,6 +45,18 @@ class _SupplierState extends State<Supplier> {
               Text("Ini halaman supplier"),
             ],
           ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DetailSupplier(),
+              ),
+            );
+          },
+          tooltip: 'Add data',
+          child: Icon(Icons.add),
         ),
       ),
     );
