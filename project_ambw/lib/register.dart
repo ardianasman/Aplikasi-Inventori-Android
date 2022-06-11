@@ -1,60 +1,28 @@
-// ignore_for_file: prefer_const_constructors, avoid_print, prefer_const_literals_to_create_immutables
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:project_ambw/register.dart';
+import 'package:project_ambw/login.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class Register extends StatefulWidget {
+  const Register({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<Register> createState() => _RegisterState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+class _RegisterState extends State<Register> {
+  bool _obsecureText = true;
+  bool _obsecureTextConfirm = true;
 
-  @override
-  void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-
-    super.dispose();
+  void togglePassword() {
+    setState(() {
+      _obsecureText = !_obsecureText;
+    });
   }
 
-  Future signIn() async {
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Logged in as ${emailController.text}',
-          ),
-        ),
-      );
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'No user found for that email!',
-            ),
-          ),
-        );
-      } else if (e.code == 'wrong-password') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Wrong password!',
-            ),
-          ),
-        );
-      }
-    }
+  void togglePasswordConfirm() {
+    setState(() {
+      _obsecureTextConfirm = !_obsecureTextConfirm;
+    });
   }
 
   @override
@@ -92,14 +60,15 @@ class _LoginPageState extends State<LoginPage> {
                 alignment: Alignment.center,
                 padding: const EdgeInsets.all(10),
                 child: const Text(
-                  'Sign in',
+                  'Register',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ),
               Container(
                 padding: const EdgeInsets.all(10),
+                // ignore: prefer_const_constructors
                 child: TextField(
-                  controller: emailController,
+                  //controller: emailController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'User Name',
@@ -108,28 +77,49 @@ class _LoginPageState extends State<LoginPage> {
               ),
               Container(
                 padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                // ignore: prefer_const_constructors
                 child: TextField(
-                  obscureText: true,
-                  controller: passwordController,
-                  decoration: const InputDecoration(
+                  obscureText: _obsecureText,
+                  //controller: passwordController,
+                  decoration: InputDecoration(
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        togglePassword();
+                      },
+                      child: Icon(
+                        _obsecureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                    ),
                     border: OutlineInputBorder(),
                     labelText: 'Password',
                   ),
                 ),
               ),
+              // ignore: prefer_const_constructors
               SizedBox(
-                height: 40,
+                height: 16,
               ),
-              TextButton(
-                onPressed: () {
-                  //forgot password screen
-                },
-                child: const Text(
-                  'Forgot Password',
+              Container(
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                child: TextField(
+                  obscureText: _obsecureTextConfirm,
+                  //controller: passwordController,
+                  decoration: InputDecoration(
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        togglePasswordConfirm();
+                      },
+                      child: Icon(
+                        _obsecureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                    ),
+                    border: OutlineInputBorder(),
+                    labelText: 'Confirm Password',
+                  ),
                 ),
               ),
               SizedBox(
-                height: 16,
+                height: 40,
               ),
               Container(
                 height: 50,
@@ -137,9 +127,9 @@ class _LoginPageState extends State<LoginPage> {
                 child: ElevatedButton(
                   child: const Text('Login'),
                   onPressed: () {
-                    print(emailController.text);
-                    print(passwordController.text);
-                    signIn();
+                    //print(emailController.text);
+                    //print(passwordController.text);
+                    //signIn();
                   },
                 ),
               ),
@@ -148,16 +138,16 @@ class _LoginPageState extends State<LoginPage> {
               ),
               Row(
                 children: <Widget>[
-                  const Text('Does not have account?'),
+                  const Text('Already have account?'),
                   TextButton(
                     child: const Text(
-                      'Register',
+                      'Login',
                       style: TextStyle(fontSize: 16),
                     ),
                     onPressed: () {
-                      //signup screen
+                      //login screen
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (builder) => Register()));
+                          MaterialPageRoute(builder: (builder) => LoginPage()));
                     },
                   )
                 ],
