@@ -1,4 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, duplicate_ignore
+
 import 'package:flutter/material.dart';
 import 'package:project_ambw/login.dart';
 
@@ -12,18 +13,6 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   bool _obsecureText = true;
   bool _obsecureTextConfirm = true;
-
-  void togglePassword() {
-    setState(() {
-      _obsecureText = !_obsecureText;
-    });
-  }
-
-  void togglePasswordConfirm() {
-    setState(() {
-      _obsecureTextConfirm = !_obsecureTextConfirm;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
