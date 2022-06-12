@@ -1,7 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'dataClass/dbservices.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -74,38 +77,39 @@ class _ProfileState extends State<Profile> {
             )
           ],
         ),
-        body: Container(
-          margin: EdgeInsets.all(8),
-          child: Column(
-            children: [
-              Column(
-                children: [
-                  Icon(
-                    Icons.account_circle,
-                    size: 115,
+        body: StreamBuilder<QuerySnapshot>(
+            stream: Database.getData(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                Text("Error");
+              } else if (snapshot.hasData || snapshot.data != null) {
+                return ListView.separated(
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot dsData = snapshot.data!.docs[index];
+                    String lvNama = dsData['nama'];
+                    String lvEmail = dsData['email'];
+                    String lvNomer = dsData['nomer'];
+                    return ListTile(
+                      onTap: () {},
+                      onLongPress: () {},
+                      title: Text(lvNama),
+                      subtitle: Text(lvEmail),
+                    );
+                  },
+                  separatorBuilder: (context, index) => SizedBox(
+                    height: 8,
                   ),
-                  Row(
-                    children: [
-                      Column(
-                        children: [
-                          Text("nama"),
-                          Text("nomer"),
-                          Text(currentUser.toString()),
-                        ],
-                      ),
-                    ],
-                  ),
-                  ElevatedButton(
-                    child: const Text('Logout'),
-                    onPressed: () {
-                      logOut();
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+                  itemCount: snapshot.data!.docs.length,
+                );
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(Colors.blueAccent)),
+                );
+              }
+              return Container();
+            }),
       ),
     );
   }
