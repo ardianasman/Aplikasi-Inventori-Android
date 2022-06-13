@@ -2,6 +2,8 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'main.dart';
+
 class forgotPassword extends StatefulWidget {
   const forgotPassword({Key? key}) : super(key: key);
 
@@ -66,10 +68,6 @@ class _forgotPasswordState extends State<forgotPassword> {
                     } else if (!EmailValidator.validate(email)) {
                       return "Enter valid email!";
                     }
-
-                    // email != null && !EmailValidator.validate(email)
-                    //     ? "Enter valid email!"
-                    //     : null;
                   },
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
@@ -98,6 +96,9 @@ class _forgotPasswordState extends State<forgotPassword> {
   }
 
   Future resetPassword() async {
+    final isValid = formKey.currentState!.validate();
+    if (!isValid) return;
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -121,5 +122,7 @@ class _forgotPasswordState extends State<forgotPassword> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.message!.trim())));
     }
+
+    navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 }

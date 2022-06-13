@@ -39,24 +39,33 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
-        body: Container(
-          margin: EdgeInsets.all(8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Welcome ${FirebaseAuth.instance.currentUser?.email}!",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              Text("Ini halaman home"),
-            ],
-          ),
+        body: GridView.count(
+          padding: EdgeInsets.all(16),
+          crossAxisCount: 2,
+          crossAxisSpacing: 8.0,
+          mainAxisSpacing: 8.0,
+          children: [
+            _buildCard(
+              'Cookie mint',
+              '\$3.99',
+              'Assets/default-avatar.jpg',
+            ),
+            _buildCard(
+              'Cookie cream',
+              '\$5.99',
+              'Assets/default-avatar.jpg',
+            ),
+            _buildCard(
+              'Cookie classic',
+              '\$1.99',
+              'Assets/default-avatar.jpg',
+            ),
+            _buildCard(
+              'Cookie choco',
+              '\$2.99',
+              'Assets/default-avatar.jpg',
+            ),
+          ],
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -69,6 +78,71 @@ class _HomeState extends State<Home> {
           },
           tooltip: 'Add data',
           child: Icon(Icons.add),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCard(String name, String price, String imgPath) {
+    return Padding(
+      padding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 5.0, right: 5.0),
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => DetailStok(),
+            ),
+          );
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                spreadRadius: 3.0,
+                blurRadius: 5.0,
+              ),
+            ],
+            color: Colors.white,
+          ),
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.only(top: 16),
+                child: Hero(
+                  tag: imgPath,
+                  child: Container(
+                    height: 75.0,
+                    width: 75.0,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(imgPath),
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 7.0),
+              Text(
+                name,
+                style: TextStyle(
+                  color: Color(0xFF575E67),
+                  fontFamily: 'Varela',
+                  fontSize: 14.0,
+                ),
+              ),
+              Text(
+                price,
+                style: TextStyle(
+                  color: Color(0xFFCC8053),
+                  fontFamily: 'Varela',
+                  fontSize: 14.0,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
