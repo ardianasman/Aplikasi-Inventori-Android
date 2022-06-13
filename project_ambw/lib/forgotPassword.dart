@@ -112,6 +112,7 @@ class _forgotPasswordState extends State<forgotPassword> {
     );
 
     try {
+      print(emailController.text.trim());
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: emailController.text.trim());
       ScaffoldMessenger.of(context)
