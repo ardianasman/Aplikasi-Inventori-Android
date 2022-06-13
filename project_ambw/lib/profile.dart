@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_ambw/dataClass/classUser.dart';
 import 'package:project_ambw/dataClass/storageservice.dart';
+import 'package:project_ambw/forgotPassword.dart';
 
 import 'dataClass/dbservices.dart';
 
@@ -36,6 +37,19 @@ class _ProfileState extends State<Profile> {
   late bool _isSaveButtonActive = true;
 
   final formKey = GlobalKey<FormState>();
+
+  Future resetPassword() async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+          email: emailController.text.toLowerCase().trim());
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Password Reset Email Sent')));
+    } on FirebaseAuthException catch (e) {
+      print(e);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.message!.trim())));
+    }
+  }
 
   Future editProfile() => showDialog(
       context: context,
@@ -88,6 +102,15 @@ class _ProfileState extends State<Profile> {
                               labelText: 'Alamat Gudang',
                             ),
                           ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          child: ElevatedButton(
+                              child: Text('Reset Password'),
+                              onPressed: () {
+                                resetPassword();
+                                Navigator.pop(context);
+                              }),
                         ),
                         Container(
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
