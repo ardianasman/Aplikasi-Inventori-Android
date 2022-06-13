@@ -44,7 +44,17 @@ class _MyAppState extends State<MyApp> {
         nextScreen: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
-            if (snapshot.hasData) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    Colors.pinkAccent,
+                  ),
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return Text("Something went wrong!");
+            } else if (snapshot.hasData) {
               print("snapshot has data");
               return MainPage();
             } else {
