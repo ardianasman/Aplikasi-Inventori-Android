@@ -60,6 +60,7 @@ class _ProfileState extends State<Profile> {
                           padding: const EdgeInsets.all(10),
                           child: TextField(
                             controller: emailController,
+                            readOnly: true,
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: 'Email',
@@ -83,78 +84,6 @@ class _ProfileState extends State<Profile> {
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: 'Alamat Gudang',
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          child: TextFormField(
-                            obscureText: obsecurePassword,
-                            controller: passwordController,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            validator: (val) {
-                              if (val!.isEmpty) {
-                                return "Input Password!";
-                              } else if (val.length < 8) {
-                                return "Enter min. 8 characters!";
-                              }
-                            },
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Password',
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          child: TextFormField(
-                            obscureText: obsecureConfirmPassword,
-                            controller: passwordConfirmController,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            validator: (val) {
-                              if (val!.isEmpty) {
-                                return "Input confirm password!";
-                              } else if (val != passwordController.text) {
-                                return "Password not same!";
-                              } else {
-                                return "Matched";
-                              }
-                            },
-                            onChanged: (content) {
-                              if (passwordController.text !=
-                                      passwordConfirmController.text ||
-                                  passwordConfirmController.text.length < 8) {
-                                late bool _isSaveButtonActive = false;
-                                setState(() {
-                                  this._isSaveButtonActive =
-                                      _isSaveButtonActive;
-                                });
-                              } else {
-                                late bool _isSaveButtonActive = true;
-                                setState(() {
-                                  this._isSaveButtonActive =
-                                      _isSaveButtonActive;
-                                });
-                              }
-                            },
-                            decoration: InputDecoration(
-                              suffixIcon: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    obsecureConfirmPassword =
-                                        !obsecureConfirmPassword;
-                                  });
-                                },
-                                icon: Icon(
-                                  obsecureConfirmPassword
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                ),
-                              ),
-                              border: OutlineInputBorder(),
-                              labelText: 'Confirm Password',
                             ),
                           ),
                         ),
@@ -205,17 +134,13 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  void toggle() {
-    setState(() {});
-  }
-
   Widget saveProfile() {
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: ElevatedButton(
           child: Text('Save Profile'),
           //style: ElevatedButton.styleFrom(onSurface: Colors.blue),
-          onPressed: _isSaveButtonActive ? toggle : null),
+          onPressed: () {}),
     );
   }
 
@@ -314,8 +239,18 @@ class _ProfileState extends State<Profile> {
             if (!snapshot.hasData) {
               return Text("No Data");
             } else if (snapshot.hasData) {
-              DocumentSnapshot users = snapshot.data!.docs[0];
-              return displayProfile(users);
+              DocumentSnapshot users, user;
+              int tmpind = 0;
+              print("curuser " + currentUser.toString());
+              for (int i = 0; i < snapshot.data!.size; i++) {
+                DocumentSnapshot users = snapshot.data!.docs[i];
+                if (users['email'].toString().toLowerCase() == currentUser) {
+                  tmpind = i;
+                  print("tmpind " + tmpind.toString());
+                }
+              }
+              user = snapshot.data!.docs[tmpind];
+              return displayProfile(user);
             } else {
               return CircularProgressIndicator();
             }

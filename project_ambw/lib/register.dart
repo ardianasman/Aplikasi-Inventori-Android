@@ -52,7 +52,7 @@ class _RegisterState extends State<Register> {
           password: passwordController.text,
           nomer: "Nomer Not set",
           alamatgudang: "Alamat gudang not set",
-          imagepath: "Not set");
+          imagepath: "default-avatar.jpg");
       Database.tambahData(user: userBaru);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
