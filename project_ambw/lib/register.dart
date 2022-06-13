@@ -1,12 +1,17 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, duplicate_ignore
 
+import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:project_ambw/dataClass/classUser.dart';
 import 'package:project_ambw/dataClass/dbservices.dart';
+import 'package:project_ambw/main.dart';
 
 class Register extends StatefulWidget {
-  const Register({Key? key}) : super(key: key);
+  final Function() onClickedSignIn;
+
+  const Register({Key? key, required this.onClickedSignIn}) : super(key: key);
 
   @override
   State<Register> createState() => _RegisterState();
@@ -20,49 +25,66 @@ class _RegisterState extends State<Register> {
   final passwordController = TextEditingController();
   final passwordconfirmController = TextEditingController();
 
-  final GlobalKey<FormState> _form = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
 
-  // Future register() async {
-  //   try {
-  //     await FirebaseAuth.instance.createUserWithEmailAndPassword(
-  //         email: emailController.text, password: passwordController.text);
-  //     final userBaru = dataUser(
-  //         email: emailController.text,
-  //         nama: namaController.text,
-  //         password: passwordController.text,
-  //         nomer: "Not set",
-  //         alamatgudang: "Not set",
-  //         imagepath: "Not set");
-  //     Database.tambahData(user: userBaru);
-  //     Navigator.pop(context);
-  //   } on FirebaseAuthException catch (e) {
-  //     if (e.code == 'email-already-in-use') {
-  //       AlertDialog(
-  //         title: Text("Email already in use!"),
-  //         actions: [
-  //           TextButton(
-  //             onPressed: () {
-  //               Navigator.pop(context);
-  //             },
-  //             child: Text(
-  //               "OK",
-  //             ),
-  //           )
-  //         ],
-  //       );
-  //     }
-  //   }
-  // }
+  Future register() async {
+    final isValid = formKey.currentState!.validate();
+    if (!isValid) return;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(
+            Colors.white,
+          ),
+        ),
+      ),
+    );
+
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text, password: passwordController.text);
+      final userBaru = dataUser(
+          email: emailController.text,
+          nama: namaController.text,
+          password: passwordController.text,
+          nomer: "Not set",
+          alamatgudang: "Not set",
+          imagepath: "Not set");
+      Database.tambahData(user: userBaru);
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        AlertDialog(
+          title: Text("Email already in use!"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                "OK",
+              ),
+            )
+          ],
+        );
+      }
+    }
+
+    navigatorKey.currentState!.popUntil((route) => route.isFirst);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Form(
-        key: _form,
+        key: formKey,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: ListView(
-            children: <Widget>[
+            children: [
               Container(
                 alignment: Alignment.center,
                 padding: EdgeInsets.all(10),
@@ -100,10 +122,11 @@ class _RegisterState extends State<Register> {
                 // ignore: prefer_const_constructors
                 child: TextFormField(
                   controller: emailController,
-                  validator: (val) {
-                    if (val!.isEmpty) {
-                      return "Email Cant be empty";
-                    }
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (email) {
+                    email != null && !EmailValidator.validate(email)
+                        ? "Enter valid email!"
+                        : null;
                   },
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
@@ -116,10 +139,9 @@ class _RegisterState extends State<Register> {
                 // ignore: prefer_const_constructors
                 child: TextFormField(
                   controller: namaController,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (val) {
-                    if (val!.isEmpty) {
-                      return "Name Cant be empty";
-                    }
+                    val != null ? "Name can't be empty!" : null;
                   },
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
@@ -133,12 +155,11 @@ class _RegisterState extends State<Register> {
                 child: TextFormField(
                   obscureText: _obsecureText,
                   controller: passwordController,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (val) {
-                    if (val!.isEmpty) {
-                      return "Password Cant be empty";
-                    } else if (val.length < 8) {
-                      return "Password must be atleast 8 characters long";
-                    }
+                    val != null && val.length <= 8
+                        ? "Enter min. 8 characters!"
+                        : null;
                   },
                   decoration: InputDecoration(
                     suffixIcon: IconButton(
@@ -161,27 +182,11 @@ class _RegisterState extends State<Register> {
                 child: TextFormField(
                   obscureText: _obsecureTextConfirm,
                   controller: passwordconfirmController,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (val) {
-                    if (val!.isEmpty) {
-                      return "Confirm Password Cant be empty";
-                    } else if (val != passwordController.text) {
-                      return "Password not match";
-                    } else {
-                      // register();
-
-                      FirebaseAuth.instance.createUserWithEmailAndPassword(
-                          email: emailController.text,
-                          password: passwordController.text);
-                      final userBaru = dataUser(
-                          email: emailController.text,
-                          nama: namaController.text,
-                          password: passwordController.text,
-                          nomer: "Not set",
-                          alamatgudang: "Not set",
-                          imagepath: "Not set");
-                      Database.tambahData(user: userBaru);
-                      Navigator.pop(context);
-                    }
+                    val != null && val != passwordController.text
+                        ? "Enter confirm password!"
+                        : null;
                   },
                   decoration: InputDecoration(
                     suffixIcon: IconButton(
@@ -208,30 +213,28 @@ class _RegisterState extends State<Register> {
                 height: 50,
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: ElevatedButton(
-                  child: const Text('Login'),
+                  child: const Text('Sign Up'),
                   onPressed: () {
-                    _form.currentState?.validate();
+                    register();
                   },
                 ),
               ),
               SizedBox(
                 height: 16,
               ),
-              Row(
-                children: <Widget>[
-                  const Text('Already have account?'),
-                  TextButton(
-                    child: const Text(
-                      'Login',
-                      style: TextStyle(fontSize: 16),
+              RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  text: "Doesn't have account? ",
+                  children: [
+                    TextSpan(
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = widget.onClickedSignIn,
+                      text: "Register",
+                      style: TextStyle(color: Colors.blue),
                     ),
-                    onPressed: () {
-                      //back to login screen
-                      Navigator.pop(context);
-                    },
-                  )
-                ],
-                mainAxisAlignment: MainAxisAlignment.center,
+                  ],
+                ),
               ),
             ],
           ),

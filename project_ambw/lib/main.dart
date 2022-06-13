@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:project_ambw/authpage.dart';
 import 'package:project_ambw/firebase_options.dart';
 import 'package:project_ambw/jenis.dart';
 import 'package:project_ambw/login.dart';
@@ -62,7 +63,7 @@ class _MyAppState extends State<MyApp> {
               return MainPage();
             } else {
               print("snapshot hasn't data");
-              return LoginPage();
+              return AuthPage();
             }
           },
         ),

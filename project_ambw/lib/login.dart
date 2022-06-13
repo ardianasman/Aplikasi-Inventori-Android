@@ -1,13 +1,16 @@
 // ignore_for_file: prefer_const_constructors, avoid_print, prefer_const_literals_to_create_immutables
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:project_ambw/register.dart';
 
 import 'main.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  final VoidCallback onClickedSignUp;
+
+  const LoginPage({Key? key, required this.onClickedSignUp}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -176,22 +179,19 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(
               height: 16,
             ),
-            Row(
-              children: <Widget>[
-                const Text('Does not have account?'),
-                TextButton(
-                  child: const Text(
-                    'Register',
-                    style: TextStyle(fontSize: 16),
+            RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                text: "Doesn't have account? ",
+                children: [
+                  TextSpan(
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = widget.onClickedSignUp,
+                    text: "Register",
+                    style: TextStyle(color: Colors.blue),
                   ),
-                  onPressed: () {
-                    //signup screen
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (builder) => Register()));
-                  },
-                )
-              ],
-              mainAxisAlignment: MainAxisAlignment.center,
+                ],
+              ),
             ),
           ],
         ),
