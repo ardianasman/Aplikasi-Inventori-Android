@@ -1,5 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:html';
+import 'dart:html';
+import 'dart:html';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +61,20 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  Widget displayProfile(users) {
+    return Center(
+      child: Column(
+        children: [
+          CircleAvatar(
+            backgroundImage: AssetImage("Assets/SplashScreen.png"),
+          ),
+          Text(users["nama"]),
+          Text(users["email"]),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -78,38 +96,19 @@ class _ProfileState extends State<Profile> {
           ],
         ),
         body: StreamBuilder<QuerySnapshot>(
-            stream: Database.getData(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                Text("Error");
-              } else if (snapshot.hasData || snapshot.data != null) {
-                return ListView.separated(
-                  itemBuilder: (context, index) {
-                    DocumentSnapshot dsData = snapshot.data!.docs[index];
-                    String lvNama = dsData['nama'];
-                    String lvEmail = dsData['email'];
-                    String lvNomer = dsData['nomer'];
-                    return ListTile(
-                      onTap: () {},
-                      onLongPress: () {},
-                      title: Text(lvNama),
-                      subtitle: Text(lvEmail),
-                    );
-                  },
-                  separatorBuilder: (context, index) => SizedBox(
-                    height: 8,
-                  ),
-                  itemCount: snapshot.data!.docs.length,
-                );
-              } else {
-                return Center(
-                  child: CircularProgressIndicator(
-                      valueColor:
-                          AlwaysStoppedAnimation<Color>(Colors.blueAccent)),
-                );
-              }
-              return Container();
-            }),
+          stream:
+              FirebaseFirestore.instance.collection("tabelUser").snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Text("No Data");
+            } else if (snapshot.hasData) {
+              DocumentSnapshot users = snapshot.data!.docs[0];
+              return displayProfile(users);
+            } else {
+              return CircularProgressIndicator();
+            }
+          },
+        ),
       ),
     );
   }
