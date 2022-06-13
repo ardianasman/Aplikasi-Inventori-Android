@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:project_ambw/register.dart';
 
+import 'forgotPassword.dart';
 import 'main.dart';
 
 class LoginPage extends StatefulWidget {
@@ -47,13 +48,6 @@ class _LoginPageState extends State<LoginPage> {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Logged in as ${emailController.text}',
-          ),
-        ),
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -154,9 +148,11 @@ class _LoginPageState extends State<LoginPage> {
               height: 40,
             ),
             TextButton(
-              onPressed: () {
-                //forgot password screen
-              },
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => forgotPassword(),
+                ),
+              ),
               child: const Text(
                 'Forgot Password',
               ),
@@ -183,6 +179,7 @@ class _LoginPageState extends State<LoginPage> {
               textAlign: TextAlign.center,
               text: TextSpan(
                 text: "Doesn't have account?  ",
+                style: TextStyle(color: Colors.black),
                 children: [
                   TextSpan(
                     recognizer: TapGestureRecognizer()

@@ -54,7 +54,6 @@ class _RegisterState extends State<Register> {
           alamatgudang: "Not set",
           imagepath: "Not set");
       Database.tambahData(user: userBaru);
-      Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
         AlertDialog(
@@ -246,6 +245,7 @@ class _RegisterState extends State<Register> {
                 textAlign: TextAlign.center,
                 text: TextSpan(
                   text: "Already have account? ",
+                  style: TextStyle(color: Colors.black),
                   children: [
                     TextSpan(
                       recognizer: TapGestureRecognizer()
