@@ -69,8 +69,13 @@ class _RegisterState extends State<Register> {
                 Container(
                   padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                   // ignore: prefer_const_constructors
-                  child: TextField(
+                  child: TextFormField(
                     controller: emailController,
+                    validator: (val) {
+                      if (val!.isEmpty) {
+                        return "Email Cant be empty";
+                      }
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Email',
@@ -80,8 +85,13 @@ class _RegisterState extends State<Register> {
                 Container(
                   padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                   // ignore: prefer_const_constructors
-                  child: TextField(
+                  child: TextFormField(
                     controller: namaController,
+                    validator: (val) {
+                      if (val!.isEmpty) {
+                        return "Name Cant be empty";
+                      }
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Nama',
@@ -96,7 +106,7 @@ class _RegisterState extends State<Register> {
                     controller: passwordController,
                     validator: (val) {
                       if (val!.isEmpty) {
-                        return "Cant be empty";
+                        return "Password Cant be empty";
                       } else if (val.length < 8) {
                         return "Password must be atleast 8 characters long";
                       }
@@ -126,7 +136,7 @@ class _RegisterState extends State<Register> {
                     controller: passwordconfirmController,
                     validator: (val) {
                       if (val!.isEmpty) {
-                        return "Cant be empty";
+                        return "Confirm Password Cant be empty";
                       } else if (val != passwordController.text) {
                         return "Password not match";
                       } else {
@@ -141,10 +151,7 @@ class _RegisterState extends State<Register> {
                             alamatgudang: "Not set",
                             imagepath: "Not set");
                         Database.tambahData(user: userBaru);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (builder) => LoginPage()));
+                        Navigator.pop(context);
                       }
                     },
                     decoration: InputDecoration(
