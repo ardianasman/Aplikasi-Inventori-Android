@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'dataClass/dbservices.dart';
 
@@ -33,6 +34,9 @@ class _ProfileState extends State<Profile> {
             onPressed: () {
               Navigator.pop(context);
               FirebaseAuth.instance.signOut();
+              Fluttertoast.showToast(
+                msg: "Logged in as ${FirebaseAuth.instance.currentUser?.email}",
+              );
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
