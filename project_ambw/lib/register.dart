@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, duplicate_ignore
 
 import 'package:email_validator/email_validator.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -223,6 +224,32 @@ class _RegisterState extends State<Register> {
                     border: OutlineInputBorder(),
                     labelText: 'Confirm Password',
                   ),
+                ),
+              ),
+              Container(
+                height: 50,
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                child: ElevatedButton(
+                  child: const Text('Upload Profile Picture'),
+                  onPressed: () async {
+                    final results = await FilePicker.platform.pickFiles(
+                      allowMultiple: false,
+                      type: FileType.custom,
+                      allowedExtensions: ['png', 'jpg'],
+                    );
+
+                    if (results == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("No File Selected")),
+                      );
+                    }
+
+                    final path = results!.files.single.path;
+                    final fileName = results!.files.single.name;
+
+                    print(path);
+                    print(fileName);
+                  },
                 ),
               ),
               SizedBox(
