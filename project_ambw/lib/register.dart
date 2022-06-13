@@ -124,9 +124,15 @@ class _RegisterState extends State<Register> {
                   controller: emailController,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (email) {
-                    email != null && !EmailValidator.validate(email)
-                        ? "Enter valid email!"
-                        : null;
+                    if (email!.isEmpty) {
+                      return "Input email!";
+                    } else if (!EmailValidator.validate(email)) {
+                      return "Enter valid email!";
+                    }
+
+                    // email != null && !EmailValidator.validate(email)
+                    //     ? "Enter valid email!"
+                    //     : null;
                   },
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
@@ -141,7 +147,10 @@ class _RegisterState extends State<Register> {
                   controller: namaController,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (val) {
-                    val != null ? "Name can't be empty!" : null;
+                    if (val!.isEmpty) {
+                      return "Input name!";
+                    }
+                    // val != null ? "Name can't be empty!" : null;
                   },
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
@@ -157,9 +166,15 @@ class _RegisterState extends State<Register> {
                   controller: passwordController,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (val) {
-                    val != null && val.length <= 8
-                        ? "Enter min. 8 characters!"
-                        : null;
+                    if (val!.isEmpty) {
+                      return "Input Password!";
+                    } else if (val.length < 8) {
+                      return "Enter min. 8 characters!";
+                    }
+
+                    // val != null && val.length <= 8
+                    //     ? "Enter min. 8 characters!"
+                    //     : null;
                   },
                   decoration: InputDecoration(
                     suffixIcon: IconButton(
@@ -184,9 +199,14 @@ class _RegisterState extends State<Register> {
                   controller: passwordconfirmController,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (val) {
-                    val != null && val != passwordController.text
-                        ? "Enter confirm password!"
-                        : null;
+                    if (val!.isEmpty) {
+                      return "Input confirm password!";
+                    } else if (val != passwordController.text) {
+                      return "Password not same!";
+                    }
+                    // val != null && val != passwordController.text
+                    //     ? "Enter confirm password!"
+                    //     : null;
                   },
                   decoration: InputDecoration(
                     suffixIcon: IconButton(
