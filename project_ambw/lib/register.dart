@@ -245,12 +245,12 @@ class _RegisterState extends State<Register> {
               RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
-                  text: "Doesn't have account? ",
+                  text: "Already have account? ",
                   children: [
                     TextSpan(
                       recognizer: TapGestureRecognizer()
                         ..onTap = widget.onClickedSignIn,
-                      text: "Register",
+                      text: "Login",
                       style: TextStyle(color: Colors.blue),
                     ),
                   ],
