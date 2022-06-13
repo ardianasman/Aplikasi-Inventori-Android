@@ -77,8 +77,8 @@ class _MainPageState extends State<MainPage> {
   int currentindex = 0;
   final pageList = [
     Home(),
-    Jenis(),
     Supplier(),
+    Jenis(),
     Profile(),
   ];
 
