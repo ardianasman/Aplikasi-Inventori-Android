@@ -117,7 +117,7 @@ class _ProfileState extends State<Profile> {
                           child: ElevatedButton(
                               child: Text('Save Profile'),
                               onPressed: () {
-                                final dtUpdate = dataUser(
+                                final dtUpdate = DataUser(
                                     email: emailController.text,
                                     nama: namaController.text,
                                     password: passwordController.text,
@@ -194,7 +194,7 @@ class _ProfileState extends State<Profile> {
               final editpath = results!.files.single.path;
               final editname = results.files.single.name;
 
-              final dtUpdate = dataUser(
+              final dtUpdate = DataUser(
                   email: users['email'],
                   nama: users['nama'],
                   password: users['password'],

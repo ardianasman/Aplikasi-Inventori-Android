@@ -12,7 +12,7 @@ class Database {
     return tabelUser.snapshots();
   }
 
-  static Future<void> tambahData({required dataUser user}) async {
+  static Future<void> tambahData({required DataUser user}) async {
     DocumentReference docRef = tabelUser.doc(user.nama);
 
     await docRef
@@ -21,7 +21,7 @@ class Database {
         .catchError((e) => print(e));
   }
 
-  static Future<void> updateData({required dataUser user}) async {
+  static Future<void> updateData({required DataUser user}) async {
     DocumentReference docRef = tabelUser.doc(user.nama);
 
     await docRef

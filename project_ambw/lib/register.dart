@@ -46,7 +46,7 @@ class _RegisterState extends State<Register> {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
-      final userBaru = dataUser(
+      final userBaru = DataUser(
           email: emailController.text,
           nama: namaController.text,
           password: passwordController.text,

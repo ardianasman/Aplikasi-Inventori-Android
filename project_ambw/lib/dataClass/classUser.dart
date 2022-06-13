@@ -1,4 +1,4 @@
-class dataUser {
+class DataUser {
   final String email;
   final String nama;
   final String password;
@@ -6,13 +6,14 @@ class dataUser {
   final String alamatgudang;
   final String imagepath;
 
-  dataUser(
-      {required this.email,
-      required this.nama,
-      required this.password,
-      required this.nomer,
-      required this.alamatgudang,
-      required this.imagepath});
+  DataUser({
+    required this.email,
+    required this.nama,
+    required this.password,
+    required this.nomer,
+    required this.alamatgudang,
+    required this.imagepath,
+  });
 
   Map<String, dynamic> toJson() {
     return {
@@ -21,12 +22,12 @@ class dataUser {
       "password": password,
       "nomer": nomer,
       "alamatgudang": alamatgudang,
-      "imagepath": imagepath
+      "imagepath": imagepath,
     };
   }
 
-  factory dataUser.fromJson(Map<String, dynamic> json) {
-    return dataUser(
+  factory DataUser.fromJson(Map<String, dynamic> json) {
+    return DataUser(
       email: json['email'],
       nama: json['nama'],
       password: json['password'],
