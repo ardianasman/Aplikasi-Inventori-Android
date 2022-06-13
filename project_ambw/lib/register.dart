@@ -1,13 +1,11 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, duplicate_ignore
 
 import 'package:email_validator/email_validator.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:project_ambw/dataClass/classUser.dart';
 import 'package:project_ambw/dataClass/dbservices.dart';
-import 'package:project_ambw/dataClass/storageservice.dart';
 import 'package:project_ambw/main.dart';
 
 class Register extends StatefulWidget {
