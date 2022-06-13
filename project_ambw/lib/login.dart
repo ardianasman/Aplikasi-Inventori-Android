@@ -182,7 +182,7 @@ class _LoginPageState extends State<LoginPage> {
             RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                text: "Doesn't have account? ",
+                text: "Doesn't have account?  ",
                 children: [
                   TextSpan(
                     recognizer: TapGestureRecognizer()
