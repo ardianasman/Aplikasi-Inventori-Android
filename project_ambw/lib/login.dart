@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_ambw/register.dart';
 
+import 'main.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -26,6 +28,18 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future signIn() async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(
+            Colors.white,
+          ),
+        ),
+      ),
+    );
+
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text,
@@ -57,6 +71,8 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     }
+
+    navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 
   @override
