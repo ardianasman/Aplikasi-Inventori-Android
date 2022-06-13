@@ -31,118 +31,139 @@ class _ProfileState extends State<Profile> {
   bool obsecurePassword = true;
   bool obsecureConfirmPassword = true;
 
+  late bool _isSaveButtonActive = true;
+
   final formKey = GlobalKey<FormState>();
 
-  void editProfile() {
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text("Edit Profile"),
-              content: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Form(
-                  key: formKey,
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        child: TextField(
-                          controller: namaController,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Nama',
-                          ),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        child: TextField(
-                          controller: emailController,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Email',
-                          ),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        child: TextField(
-                          controller: nomerController,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Nomer Telepon',
-                          ),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        child: TextField(
-                          controller: gudangController,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Alamat Gudang',
-                          ),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        child: TextFormField(
-                          obscureText: obsecurePassword,
-                          controller: passwordController,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Password',
-                          ),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        child: TextFormField(
-                          obscureText: obsecureConfirmPassword,
-                          controller: passwordConfirmController,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (val) {
-                            if (val!.isEmpty) {
-                              return "Input confirm password!";
-                            } else if (val != passwordController.text) {
-                              return "Password not same!";
-                            }
-                            // val != null && val != passwordController.text
-                            //     ? "Enter confirm password!"
-                            //     : null;
-                          },
-                          decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  obsecureConfirmPassword =
-                                      !obsecureConfirmPassword;
-                                });
-                              },
-                              icon: Icon(
-                                obsecureConfirmPassword
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
-                              ),
+  Future editProfile() => showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+          builder: ((context, setState) => AlertDialog(
+                title: Text("Edit Profile"),
+                content: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          child: TextField(
+                            controller: namaController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Nama',
                             ),
-                            border: OutlineInputBorder(),
-                            labelText: 'Confirm Password',
                           ),
                         ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        child: ElevatedButton(
-                          child: const Text('Save Profile'),
-                          onPressed: () {},
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          child: TextField(
+                            controller: emailController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Email',
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          child: TextField(
+                            controller: nomerController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Nomer Telepon',
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          child: TextField(
+                            controller: gudangController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Alamat Gudang',
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          child: TextFormField(
+                            obscureText: obsecurePassword,
+                            controller: passwordController,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (val) {
+                              if (val!.isEmpty) {
+                                return "Input Password!";
+                              } else if (val.length < 8) {
+                                return "Enter min. 8 characters!";
+                              }
+                            },
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Password',
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          child: TextFormField(
+                            obscureText: obsecureConfirmPassword,
+                            controller: passwordConfirmController,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (val) {
+                              if (val!.isEmpty) {
+                                return "Input confirm password!";
+                              } else if (val != passwordController.text) {
+                                return "Password not same!";
+                              } else {
+                                return "Matched";
+                              }
+                            },
+                            onChanged: (content) {
+                              if (passwordController.text !=
+                                      passwordConfirmController.text ||
+                                  passwordConfirmController.text.length < 8) {
+                                late bool _isSaveButtonActive = false;
+                                setState(() {
+                                  this._isSaveButtonActive =
+                                      _isSaveButtonActive;
+                                });
+                              } else {
+                                late bool _isSaveButtonActive = true;
+                                setState(() {
+                                  this._isSaveButtonActive =
+                                      _isSaveButtonActive;
+                                });
+                              }
+                            },
+                            decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    obsecureConfirmPassword =
+                                        !obsecureConfirmPassword;
+                                  });
+                                },
+                                icon: Icon(
+                                  obsecureConfirmPassword
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                ),
+                              ),
+                              border: OutlineInputBorder(),
+                              labelText: 'Confirm Password',
+                            ),
+                          ),
+                        ),
+                        saveProfile(),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ));
-  }
+              ))));
 
   void logOut() {
     showDialog(
@@ -181,6 +202,20 @@ class _ProfileState extends State<Profile> {
           ),
         ],
       ),
+    );
+  }
+
+  void toggle() {
+    setState(() {});
+  }
+
+  Widget saveProfile() {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+      child: ElevatedButton(
+          child: Text('Save Profile'),
+          //style: ElevatedButton.styleFrom(onSurface: Colors.blue),
+          onPressed: _isSaveButtonActive ? toggle : null),
     );
   }
 
