@@ -34,16 +34,15 @@ dependencies:
   email_validator: ^2.0.1
   firebase_auth: ^1.1.4
   firebase_core: ^1.17.1
-  firebase_dynamic_links:  fluttertoast: ^8.0.9
+  firebase_dynamic_links: ^0.5.1
+  flutter:
+    sdk: flutter
   font_awesome_flutter: ^9.0.0
   google_sign_in: ^5.0.3
   page_transition: ^2.0.5
   provider: ^5.0.0
 
 dev_dependencies:
-lint
-  # rules and activating additional ones.
-tional ones.
   flutter_lints: ^1.0.0
   flutter_test:
     sdk: flutter
