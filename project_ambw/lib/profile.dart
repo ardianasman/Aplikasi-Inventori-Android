@@ -27,6 +27,8 @@ class _ProfileState extends State<Profile> {
   TextEditingController gudangController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
   TextEditingController passwordConfirmController = new TextEditingController();
+  TextEditingController imagepath = new TextEditingController();
+  late String tmpnama = "";
 
   bool obsecurePassword = true;
   bool obsecureConfirmPassword = true;
@@ -87,7 +89,24 @@ class _ProfileState extends State<Profile> {
                             ),
                           ),
                         ),
-                        saveProfile(),
+                        Container(
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          child: ElevatedButton(
+                              child: Text('Save Profile'),
+                              onPressed: () {
+                                final dtUpdate = dataUser(
+                                    email: emailController.text,
+                                    nama: namaController.text,
+                                    password: passwordController.text,
+                                    nomer: nomerController.text,
+                                    alamatgudang: gudangController.text,
+                                    imagepath: imagepath.text);
+                                Database.delete(nama: tmpnama);
+                                Database.tambahData(user: dtUpdate);
+
+                                Navigator.pop(context);
+                              }),
+                        ),
                       ],
                     ),
                   ),
@@ -131,16 +150,6 @@ class _ProfileState extends State<Profile> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget saveProfile() {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-      child: ElevatedButton(
-          child: Text('Save Profile'),
-          //style: ElevatedButton.styleFrom(onSurface: Colors.blue),
-          onPressed: () {}),
     );
   }
 
@@ -199,11 +208,13 @@ class _ProfileState extends State<Profile> {
             child: const Text('Edit Profile'),
             onPressed: () {
               namaController.text = users['nama'];
+              tmpnama = users['nama'];
               emailController.text = users['email'];
               nomerController.text = users['nomer'];
               gudangController.text = users['alamatgudang'];
               passwordController.text = users['password'];
               passwordConfirmController.text = users['password'];
+              imagepath.text = users['imagepath'];
               editProfile();
             },
           ),

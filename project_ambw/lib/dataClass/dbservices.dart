@@ -29,4 +29,13 @@ class Database {
         .whenComplete(() => print("Data berhasil update"))
         .catchError((e) => print(e));
   }
+
+  static Future<void> delete({required String nama}) async {
+    DocumentReference docRef = tabelUser.doc(nama);
+
+    await docRef
+        .delete()
+        .whenComplete(() => print("Data berhasil delete"))
+        .catchError((e) => print(e));
+  }
 }
