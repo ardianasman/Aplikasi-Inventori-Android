@@ -20,4 +20,13 @@ class Database {
         .whenComplete(() => print("Data berhasil register"))
         .catchError((e) => print(e));
   }
+
+  static Future<void> updateData({required dataUser user}) async {
+    DocumentReference docRef = tabelUser.doc(user.nama);
+
+    await docRef
+        .update(user.toJson())
+        .whenComplete(() => print("Data berhasil update"))
+        .catchError((e) => print(e));
+  }
 }

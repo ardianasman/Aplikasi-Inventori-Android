@@ -7,6 +7,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:project_ambw/dataClass/classUser.dart';
 import 'package:project_ambw/dataClass/dbservices.dart';
+import 'package:project_ambw/dataClass/storageservice.dart';
 import 'package:project_ambw/main.dart';
 
 class Register extends StatefulWidget {
@@ -51,8 +52,8 @@ class _RegisterState extends State<Register> {
           email: emailController.text,
           nama: namaController.text,
           password: passwordController.text,
-          nomer: "Not set",
-          alamatgudang: "Not set",
+          nomer: "Nomer Not set",
+          alamatgudang: "Alamat gudang not set",
           imagepath: "Not set");
       Database.tambahData(user: userBaru);
     } on FirebaseAuthException catch (e) {
@@ -224,32 +225,6 @@ class _RegisterState extends State<Register> {
                     border: OutlineInputBorder(),
                     labelText: 'Confirm Password',
                   ),
-                ),
-              ),
-              Container(
-                height: 50,
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                child: ElevatedButton(
-                  child: const Text('Upload Profile Picture'),
-                  onPressed: () async {
-                    final results = await FilePicker.platform.pickFiles(
-                      allowMultiple: false,
-                      type: FileType.custom,
-                      allowedExtensions: ['png', 'jpg'],
-                    );
-
-                    if (results == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("No File Selected")),
-                      );
-                    }
-
-                    final path = results!.files.single.path;
-                    final fileName = results!.files.single.name;
-
-                    print(path);
-                    print(fileName);
-                  },
                 ),
               ),
               SizedBox(

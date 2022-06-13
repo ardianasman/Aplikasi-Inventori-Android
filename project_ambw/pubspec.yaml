@@ -36,6 +36,7 @@ dependencies:
   firebase_auth: ^1.1.4
   firebase_core: ^1.17.1
   firebase_dynamic_links: ^0.5.1
+  firebase_storage: ^10.2.17
   flutter:
     sdk: flutter
   font_awesome_flutter: ^9.0.0
@@ -59,7 +60,7 @@ flutter:
   uses-material-design: true
   # To add assets to your application, add an assets section, like this:
   assets:
-    - Assets/SplashScreen.png
+    - Assets/default-avatar.jpg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see
