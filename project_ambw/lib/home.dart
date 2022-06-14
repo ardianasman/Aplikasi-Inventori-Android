@@ -15,6 +15,10 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
+    var _size = MediaQuery.of(context).size;
+    final double itemHeight = (_size.height - kToolbarHeight - 24) / 2;
+    final double itemWidth = _size.width / 2;
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Inventory App | Home",
@@ -44,6 +48,7 @@ class _HomeState extends State<Home> {
           crossAxisCount: 2,
           crossAxisSpacing: 8.0,
           mainAxisSpacing: 8.0,
+          childAspectRatio: (itemWidth / itemHeight),
           children: [
             _buildCard(
               'Cookie mint',

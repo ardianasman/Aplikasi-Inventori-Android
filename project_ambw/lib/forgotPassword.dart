@@ -118,12 +118,12 @@ class _forgotPasswordState extends State<forgotPassword> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Password Reset Email Sent')));
       Navigator.pop(context);
+      navigatorKey.currentState!.popUntil((route) => route.isFirst);
     } on FirebaseAuthException catch (e) {
       print(e);
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.message!.trim())));
+      Navigator.pop(context);
     }
-
-    navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 }
