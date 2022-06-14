@@ -45,10 +45,10 @@ class _HomeState extends State<Home> {
         ),
         body: GridView.count(
           padding: EdgeInsets.all(16),
-          crossAxisCount: 2,
+          crossAxisCount:
+              MediaQuery.of(context).size.shortestSide < 600 ? 2 : 4,
           crossAxisSpacing: 8.0,
           mainAxisSpacing: 8.0,
-          childAspectRatio: (itemWidth / itemHeight),
           children: [
             _buildCard(
               'Cookie mint',
