@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:project_ambw/aboutus.dart';
 
 class DetailStok extends StatefulWidget {
@@ -18,8 +19,12 @@ class _DetailStokState extends State<DetailStok> {
   TextEditingController jenisController = TextEditingController();
   TextEditingController jumlahController = TextEditingController();
 
+  CollectionReference jenisref =
+      FirebaseFirestore.instance.collection("tabelJenis");
+
   late List<String> listjenis = [];
-  late String _selectedjenis = "1";
+
+  late int c = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -79,55 +84,88 @@ class _DetailStokState extends State<DetailStok> {
                   ),
                 ),
               ),
-              StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection("tabelJenis")
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Text("No Data");
-                  } else if (snapshot.hasData) {
-                    DocumentSnapshot ds;
-                    for (int i = 0; i < snapshot.data!.size; i++) {
-                      DocumentSnapshot dss = snapshot.data!.docs[i];
-                      print(dss['namaJenis']);
-                      listjenis.add(dss.data().toString());
-                      print("done add");
-                      print(listjenis);
+              FutureBuilder(
+                  future: jenisref.get(),
+                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (c != 1) {
+                      if (!snapshot.hasData) {
+                        return CircularProgressIndicator();
+                      } else {
+                        for (int i = 0; i < snapshot.data!.docs.length; i++) {
+                          List<QueryDocumentSnapshot<Object?>> ds =
+                              snapshot.data!.docs;
+                          for (int j = 0; j < ds.length - 1; j++) {
+                            listjenis.add(ds[i]["namaJenis"]);
+                            c = 1;
+                          }
+                        }
+                        return showJenis();
+                      }
+                    } else {
+                      return showJenis();
                     }
-                    return Container(
-                      width: size.width,
-                      color: Colors.red,
-                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                      child: DropdownButton(
-                        dropdownColor: Colors.blue,
-                        hint: Text("Pilih Jenis Barang"),
-                        onChanged: (value) {
-                          _selectedjenis = value.toString();
-                          setState(() {
-                            _selectedjenis;
-                            print(_selectedjenis);
-                          });
-                        },
-                        value: _selectedjenis,
-                        items: listjenis
-                            .map(
-                              (e) => DropdownMenuItem(
-                                value: e,
-                                child: Text(e),
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    );
-                  } else {
-                    return CircularProgressIndicator();
-                  }
-                },
-              ),
+                  }),
             ]),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget showJenis() {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+      child: Autocomplete(
+        optionsBuilder: (TextEditingValue textEditingValue) {
+          return listjenis.where((element) => element
+              .toLowerCase()
+              .contains(textEditingValue.text.toLowerCase()));
+        },
+        fieldViewBuilder: (context, controller, focusNode, onEditingComplete) {
+          return TextFormField(
+            controller: controller,
+            focusNode: focusNode,
+            onEditingComplete: onEditingComplete,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6),
+                borderSide: BorderSide(color: Colors.grey),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6),
+                borderSide: BorderSide(color: Colors.blue),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6),
+                borderSide: BorderSide(color: Colors.grey),
+              ),
+              hintText: "Pilih Jenis Barang",
+            ),
+          );
+        },
+        onSelected: (selectedjenis) {
+          print(selectedjenis);
+        },
+        optionsViewBuilder: (context, Function(String) onSelected, options) {
+          return Material(
+            elevation: 4,
+            child: ListView.separated(
+              separatorBuilder: ((context, index) => Divider()),
+              itemCount: options.length,
+              itemBuilder: (context, index) {
+                final option = options.elementAt(index);
+
+                return ListTile(
+                  title: Text(option.toString()),
+                  subtitle: Text("This is sub"),
+                  onTap: () {
+                    onSelected(option.toString());
+                  },
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }
