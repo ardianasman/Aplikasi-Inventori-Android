@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_ambw/aboutus.dart';
 import 'package:project_ambw/dataClass/classInventori.dart';
@@ -14,6 +15,9 @@ class Supplier extends StatefulWidget {
 }
 
 class _SupplierState extends State<Supplier> {
+  late List<String> listNmSupplier = [];
+  late List<String> listAlSupplier = [];
+
   @override
   Widget build(BuildContext context) {
     final Stream<QuerySnapshot> sup =
@@ -56,13 +60,21 @@ class _SupplierState extends State<Supplier> {
                 return Text("Loading");
               }
               final data = snapshot.requireData;
+
+              for (int i = 0; i < data.size; i++) {
+                if (data.docs[i]['emailUser'] ==
+                    FirebaseAuth.instance.currentUser!.email.toString()) {
+                  listNmSupplier.add(data.docs[i]['namaSupplier']);
+                  listAlSupplier.add(data.docs[i]['alamatSupplier']);
+                }
+              }
               return ListView.builder(
-                  itemCount: data.size,
+                  itemCount: listNmSupplier.length,
                   itemBuilder: (context, index) {
                     return Card(
                       child: ListTile(
-                        title: Text(data.docs[index]['namaSupplier']),
-                        subtitle: Text(data.docs[index]['alamatSupplier']),
+                        title: Text(listNmSupplier[index]),
+                        subtitle: Text(listAlSupplier[index]),
                       ),
                     );
                   });
