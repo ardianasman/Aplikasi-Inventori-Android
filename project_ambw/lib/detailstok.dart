@@ -29,6 +29,8 @@ class _DetailStokState extends State<DetailStok> {
       FirebaseFirestore.instance.collection("tabelJenis");
   CollectionReference supplierref =
       FirebaseFirestore.instance.collection("tabelSupplier");
+  CollectionReference inventoriref =
+      FirebaseFirestore.instance.collection("tabelInventori");
 
   late List<String> listjenis = [];
   late List<String> listdesc = [];
@@ -42,6 +44,22 @@ class _DetailStokState extends State<DetailStok> {
   void initState() {
     super.initState();
     dateController = new TextEditingController(text: formatteddate);
+  }
+
+  Future<void> addInventory() {
+    // Call the user's CollectionReference to add a new user
+    return inventoriref
+        .add({
+          'fotoBarang': "",
+          'hargaBarang': hargaController.text,
+          'jenisBarang': jenisController.text,
+          'jumlahBarang': jumlahController.text,
+          'namaBarang': namaController.text,
+          'supplierBarang': jenisController.text,
+          'tanggalMasukBarang': dateController.text,
+        })
+        .then((value) => print("Inventory Added"))
+        .catchError((error) => print("Failed to add Inventory: $error"));
   }
 
   @override
@@ -218,6 +236,15 @@ class _DetailStokState extends State<DetailStok> {
                       },
                     ),
                   ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    addInventory();
+                  },
+                  child: Text("Add Stok"),
                 ),
               ),
             ]),
