@@ -25,8 +25,8 @@ class _DetailJenisState extends State<DetailJenis> {
           'namaJenis': namaController.text,
           'deskripsiJenis': deskripsiController.text,
         })
-        .then((value) => print("Supplier Added"))
-        .catchError((error) => print("Failed to add Supplier: $error"));
+        .then((value) => print("Category Added"))
+        .catchError((error) => print("Failed to add Category: $error"));
   }
 
   @override

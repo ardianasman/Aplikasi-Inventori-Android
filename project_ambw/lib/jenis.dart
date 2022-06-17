@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:project_ambw/aboutus.dart';
 import 'package:project_ambw/detailjenis.dart';
@@ -14,6 +15,8 @@ class Jenis extends StatefulWidget {
 class _JenisState extends State<Jenis> {
   @override
   Widget build(BuildContext context) {
+    final Stream<QuerySnapshot> sup =
+        FirebaseFirestore.instance.collection('tabelJenis').snapshots();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Inventory App | Jenis",
@@ -39,11 +42,30 @@ class _JenisState extends State<Jenis> {
           ],
         ),
         body: Container(
-          margin: EdgeInsets.all(8),
-          child: Column(
-            children: [
-              Text("Ini halaman jenis"),
-            ],
+          child: StreamBuilder<QuerySnapshot>(
+            stream: sup,
+            builder: (
+              BuildContext context,
+              AsyncSnapshot<QuerySnapshot> snapshot,
+            ) {
+              if (snapshot.hasError) {
+                return Text("Somenthing Wrong");
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Text("Loading");
+              }
+              final data = snapshot.requireData;
+              return ListView.builder(
+                  itemCount: data.size,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      child: ListTile(
+                        title: Text(data.docs[index]['namaJenis']),
+                        subtitle: Text(data.docs[index]['deskripsiJenis']),
+                      ),
+                    );
+                  });
+            },
           ),
         ),
         floatingActionButton: FloatingActionButton(

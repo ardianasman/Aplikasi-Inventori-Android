@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:project_ambw/aboutus.dart';
+import 'package:project_ambw/dataClass/classInventori.dart';
 import 'package:project_ambw/detailsupplier.dart';
 
 class Supplier extends StatefulWidget {
@@ -14,6 +16,8 @@ class Supplier extends StatefulWidget {
 class _SupplierState extends State<Supplier> {
   @override
   Widget build(BuildContext context) {
+    final Stream<QuerySnapshot> sup =
+        FirebaseFirestore.instance.collection('tabelSupplier').snapshots();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Inventory App | Supplier",
@@ -39,11 +43,30 @@ class _SupplierState extends State<Supplier> {
           ],
         ),
         body: Container(
-          margin: EdgeInsets.all(8),
-          child: Column(
-            children: [
-              Text("Ini halaman supplier"),
-            ],
+          child: StreamBuilder<QuerySnapshot>(
+            stream: sup,
+            builder: (
+              BuildContext context,
+              AsyncSnapshot<QuerySnapshot> snapshot,
+            ) {
+              if (snapshot.hasError) {
+                return Text("Somenthing Wrong");
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Text("Loading");
+              }
+              final data = snapshot.requireData;
+              return ListView.builder(
+                  itemCount: data.size,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      child: ListTile(
+                        title: Text(data.docs[index]['namaSupplier']),
+                        subtitle: Text(data.docs[index]['alamatSupplier']),
+                      ),
+                    );
+                  });
+            },
           ),
         ),
         floatingActionButton: FloatingActionButton(
