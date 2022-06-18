@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_ambw/aboutus.dart';
 import 'package:project_ambw/detailjenis.dart';
-import 'package:project_ambw/editJenis.dart';
 
 class MyData {
   String NmJenis;
@@ -21,7 +20,66 @@ class Jenis extends StatefulWidget {
 }
 
 class _JenisState extends State<Jenis> {
+  final formKey = GlobalKey<FormState>();
   late List<MyData> list = [];
+  TextEditingController namaController = TextEditingController();
+  TextEditingController deskripsiController = TextEditingController();
+
+  Future editJenis() => showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+          builder: ((context, setState) => AlertDialog(
+                title: Text("Edit Profile"),
+                content: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          child: TextField(
+                            controller: namaController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Nama Jenis',
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          child: TextField(
+                            controller: deskripsiController,
+                            readOnly: true,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Deskripsi Jenis',
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          child: ElevatedButton(
+                              child: Text('Save Data Jenis'),
+                              onPressed: () {
+                                // final dtUpdate = DataUser(
+                                //     email: emailController.text,
+                                //     nama: namaController.text,
+                                //     password: passwordController.text,
+                                //     nomer: nomerController.text,
+                                //     alamatgudang: gudangController.text,
+                                //     imagepath: imagepath.text);
+                                // Database.delete(nama: tmpnama);
+                                // Database.tambahData(user: dtUpdate);
+
+                                // Navigator.pop(context);
+                              }),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ))));
 
   @override
   Widget build(BuildContext context) {
@@ -78,11 +136,9 @@ class _JenisState extends State<Jenis> {
                     return Card(
                       child: ListTile(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => editJenis(list[index])),
-                          );
+                          namaController.text = list[index].NmJenis;
+                          deskripsiController.text = list[index].DkJenis;
+                          editJenis();
                         },
                         title: Text(list[index].NmJenis),
                         subtitle: Text(list[index].DkJenis),

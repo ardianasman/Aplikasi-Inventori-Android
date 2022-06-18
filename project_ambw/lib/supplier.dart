@@ -7,8 +7,6 @@ import 'package:project_ambw/aboutus.dart';
 import 'package:project_ambw/dataClass/classInventori.dart';
 import 'package:project_ambw/detailsupplier.dart';
 
-import 'editSupplier.dart';
-
 class MyData {
   String NmSupplier;
   String AlSupplier;
@@ -23,7 +21,66 @@ class Supplier extends StatefulWidget {
 }
 
 class _SupplierState extends State<Supplier> {
+  final formKey = GlobalKey<FormState>();
   late List<MyData> list = [];
+  TextEditingController namaController = TextEditingController();
+  TextEditingController alamatController = TextEditingController();
+
+  Future editSupplier() => showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+          builder: ((context, setState) => AlertDialog(
+                title: Text("Edit Profile"),
+                content: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          child: TextField(
+                            controller: namaController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Nama Supplier',
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          child: TextField(
+                            controller: alamatController,
+                            readOnly: true,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Alamat Supplier',
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          child: ElevatedButton(
+                              child: Text('Save Data SUpplier'),
+                              onPressed: () {
+                                // final dtUpdate = DataUser(
+                                //     email: emailController.text,
+                                //     nama: namaController.text,
+                                //     password: passwordController.text,
+                                //     nomer: nomerController.text,
+                                //     alamatgudang: gudangController.text,
+                                //     imagepath: imagepath.text);
+                                // Database.delete(nama: tmpnama);
+                                // Database.tambahData(user: dtUpdate);
+
+                                // Navigator.pop(context);
+                              }),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ))));
 
   @override
   Widget build(BuildContext context) {
@@ -81,12 +138,9 @@ class _SupplierState extends State<Supplier> {
                     return Card(
                       child: ListTile(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    editSupplier(list[index])),
-                          );
+                          namaController.text = list[index].NmSupplier;
+                          alamatController.text = list[index].AlSupplier;
+                          editSupplier();
                         },
                         title: Text(list[index].NmSupplier),
                         subtitle: Text(list[index].AlSupplier),
