@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_ambw/aboutus.dart';
 import 'package:project_ambw/dataClass/classInventori.dart';
+import 'package:project_ambw/dataClass/classSupplier.dart';
+import 'package:project_ambw/dataClass/dbservices.dart';
 import 'package:project_ambw/detailsupplier.dart';
 
 class MyData {
@@ -24,7 +26,10 @@ class _SupplierState extends State<Supplier> {
   final formKey = GlobalKey<FormState>();
   late List<MyData> list = [];
   TextEditingController namaController = TextEditingController();
+  TextEditingController tmpController = TextEditingController();
   TextEditingController alamatController = TextEditingController();
+  CollectionReference supplierref =
+      FirebaseFirestore.instance.collection("tabelSupplier");
 
   Future editSupplier() => showDialog(
       context: context,
@@ -63,17 +68,39 @@ class _SupplierState extends State<Supplier> {
                           child: ElevatedButton(
                               child: Text('Save Data SUpplier'),
                               onPressed: () {
-                                // final dtUpdate = DataUser(
-                                //     email: emailController.text,
-                                //     nama: namaController.text,
-                                //     password: passwordController.text,
-                                //     nomer: nomerController.text,
-                                //     alamatgudang: gudangController.text,
-                                //     imagepath: imagepath.text);
-                                // Database.delete(nama: tmpnama);
-                                // Database.tambahData(user: dtUpdate);
+                                int c = 0;
 
-                                // Navigator.pop(context);
+                                FirebaseFirestore.instance
+                                    .collection("tabelSupplier")
+                                    .where('namaSupplier',
+                                        isEqualTo: tmpController.text)
+                                    .where('emailUser',
+                                        isEqualTo: FirebaseAuth
+                                            .instance.currentUser!.email
+                                            .toString())
+                                    .snapshots()
+                                    .listen((event) {
+                                  if (c == 0) {
+                                    final dtSupplier = DataSupplier(
+                                        nama: namaController.text,
+                                        emailuser: FirebaseAuth
+                                            .instance.currentUser!.email
+                                            .toString(),
+                                        alamat: alamatController.text);
+                                    Database.deleteSupplier(
+                                        supplierid:
+                                            event.docs[0].id.toString());
+                                    supplierref.add({
+                                      'emailUser': FirebaseAuth
+                                          .instance.currentUser!.email
+                                          .toString(),
+                                      'namaSupplier': namaController.text,
+                                      'alamatSupplier': alamatController.text,
+                                    });
+                                    c = 1;
+                                    Navigator.pop(context);
+                                  }
+                                });
                               }),
                         ),
                       ],
@@ -139,6 +166,7 @@ class _SupplierState extends State<Supplier> {
                       child: ListTile(
                         onTap: () {
                           namaController.text = list[index].NmSupplier;
+                          tmpController.text = list[index].NmSupplier;
                           alamatController.text = list[index].AlSupplier;
                           editSupplier();
                         },

@@ -1,9 +1,9 @@
-class DataInventori {
+class DataSupplier {
   final String nama;
   final String emailuser;
   final String alamat;
 
-  DataInventori({
+  DataSupplier({
     required this.nama,
     required this.emailuser,
     required this.alamat,
@@ -17,8 +17,8 @@ class DataInventori {
     };
   }
 
-  factory DataInventori.fromJson(Map<String, dynamic> json) {
-    return DataInventori(
+  factory DataSupplier.fromJson(Map<String, dynamic> json) {
+    return DataSupplier(
       nama: json['namaSupplier'],
       emailuser: json['emailUser'],
       alamat: json['alamatSupplier'],
