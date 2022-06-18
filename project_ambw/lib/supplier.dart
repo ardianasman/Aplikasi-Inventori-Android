@@ -7,6 +7,14 @@ import 'package:project_ambw/aboutus.dart';
 import 'package:project_ambw/dataClass/classInventori.dart';
 import 'package:project_ambw/detailsupplier.dart';
 
+import 'editSupplier.dart';
+
+class MyData {
+  String NmSupplier;
+  String AlSupplier;
+  MyData(this.NmSupplier, this.AlSupplier);
+}
+
 class Supplier extends StatefulWidget {
   const Supplier({Key? key}) : super(key: key);
 
@@ -15,8 +23,7 @@ class Supplier extends StatefulWidget {
 }
 
 class _SupplierState extends State<Supplier> {
-  late List<String> listNmSupplier = [];
-  late List<String> listAlSupplier = [];
+  late List<MyData> list = [];
 
   @override
   Widget build(BuildContext context) {
@@ -64,17 +71,25 @@ class _SupplierState extends State<Supplier> {
               for (int i = 0; i < data.size; i++) {
                 if (data.docs[i]['emailUser'] ==
                     FirebaseAuth.instance.currentUser!.email.toString()) {
-                  listNmSupplier.add(data.docs[i]['namaSupplier']);
-                  listAlSupplier.add(data.docs[i]['alamatSupplier']);
+                  list.add(MyData(data.docs[i]['namaSupplier'],
+                      data.docs[i]['alamatSupplier']));
                 }
               }
               return ListView.builder(
-                  itemCount: listNmSupplier.length,
+                  itemCount: list.length,
                   itemBuilder: (context, index) {
                     return Card(
                       child: ListTile(
-                        title: Text(listNmSupplier[index]),
-                        subtitle: Text(listAlSupplier[index]),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    editSupplier(list[index])),
+                          );
+                        },
+                        title: Text(list[index].NmSupplier),
+                        subtitle: Text(list[index].AlSupplier),
                       ),
                     );
                   });
