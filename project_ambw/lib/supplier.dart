@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +37,7 @@ class _SupplierState extends State<Supplier> {
       context: context,
       builder: (context) => StatefulBuilder(
           builder: ((context, setState) => AlertDialog(
-                title: Text("Edit Profile"),
+                title: Text("Edit Supplier"),
                 content: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
                   child: Form(
@@ -56,7 +58,6 @@ class _SupplierState extends State<Supplier> {
                           padding: const EdgeInsets.all(10),
                           child: TextField(
                             controller: alamatController,
-                            readOnly: true,
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: 'Alamat Supplier',
@@ -66,7 +67,7 @@ class _SupplierState extends State<Supplier> {
                         Container(
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                           child: ElevatedButton(
-                              child: Text('Save Data SUpplier'),
+                              child: Text('Save Data Supplier'),
                               onPressed: () {
                                 int c = 0;
 
@@ -151,7 +152,7 @@ class _SupplierState extends State<Supplier> {
                 return Text("Loading");
               }
               final data = snapshot.requireData;
-
+              list.clear();
               for (int i = 0; i < data.size; i++) {
                 if (data.docs[i]['emailUser'] ==
                     FirebaseAuth.instance.currentUser!.email.toString()) {
@@ -186,6 +187,7 @@ class _SupplierState extends State<Supplier> {
                 builder: (context) => DetailSupplier(),
               ),
             );
+            list.clear();
           },
           tooltip: 'Add data',
           child: Icon(Icons.add),

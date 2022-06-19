@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_ambw/aboutus.dart';
+import 'package:project_ambw/dataClass/classJenis.dart';
+import 'package:project_ambw/dataClass/dbservices.dart';
 import 'package:project_ambw/detailjenis.dart';
 
 class MyData {
@@ -24,12 +26,16 @@ class _JenisState extends State<Jenis> {
   late List<MyData> list = [];
   TextEditingController namaController = TextEditingController();
   TextEditingController deskripsiController = TextEditingController();
+  TextEditingController tmpController = TextEditingController();
+
+  CollectionReference jenisref =
+      FirebaseFirestore.instance.collection("tabelJenis");
 
   Future editJenis() => showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
           builder: ((context, setState) => AlertDialog(
-                title: Text("Edit Profile"),
+                title: Text("Edit Jenis"),
                 content: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
                   child: Form(
@@ -50,7 +56,6 @@ class _JenisState extends State<Jenis> {
                           padding: const EdgeInsets.all(10),
                           child: TextField(
                             controller: deskripsiController,
-                            readOnly: true,
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: 'Deskripsi Jenis',
@@ -62,17 +67,40 @@ class _JenisState extends State<Jenis> {
                           child: ElevatedButton(
                               child: Text('Save Data Jenis'),
                               onPressed: () {
-                                // final dtUpdate = DataUser(
-                                //     email: emailController.text,
-                                //     nama: namaController.text,
-                                //     password: passwordController.text,
-                                //     nomer: nomerController.text,
-                                //     alamatgudang: gudangController.text,
-                                //     imagepath: imagepath.text);
-                                // Database.delete(nama: tmpnama);
-                                // Database.tambahData(user: dtUpdate);
+                                int c = 0;
 
-                                // Navigator.pop(context);
+                                FirebaseFirestore.instance
+                                    .collection("tabelJenis")
+                                    .where('namaJenis',
+                                        isEqualTo: tmpController.text)
+                                    .where('emailUser',
+                                        isEqualTo: FirebaseAuth
+                                            .instance.currentUser!.email
+                                            .toString())
+                                    .snapshots()
+                                    .listen((event) {
+                                  if (c == 0) {
+                                    final dtJenis = DataJenis(
+                                        nama: namaController.text,
+                                        emailuser: FirebaseAuth
+                                            .instance.currentUser!.email
+                                            .toString(),
+                                        deskripsi: deskripsiController.text);
+                                    Database.deleteJenis(
+                                        supplierid:
+                                            event.docs[0].id.toString());
+                                    jenisref.add({
+                                      'emailUser': FirebaseAuth
+                                          .instance.currentUser!.email
+                                          .toString(),
+                                      'namaJenis': namaController.text,
+                                      'deskripsiJenis':
+                                          deskripsiController.text,
+                                    });
+                                    c = 1;
+                                    Navigator.pop(context);
+                                  }
+                                });
                               }),
                         ),
                       ],
@@ -123,6 +151,7 @@ class _JenisState extends State<Jenis> {
                 return Text("Loading");
               }
               final data = snapshot.requireData;
+              list.clear();
               for (int i = 0; i < data.size; i++) {
                 if (data.docs[i]['emailUser'] ==
                     FirebaseAuth.instance.currentUser!.email.toString()) {
@@ -136,6 +165,7 @@ class _JenisState extends State<Jenis> {
                     return Card(
                       child: ListTile(
                         onTap: () {
+                          tmpController.text = list[index].NmJenis;
                           namaController.text = list[index].NmJenis;
                           deskripsiController.text = list[index].DkJenis;
                           editJenis();
@@ -156,6 +186,7 @@ class _JenisState extends State<Jenis> {
                 builder: (context) => DetailJenis(),
               ),
             );
+            list.clear();
           },
           tooltip: 'Add data',
           child: Icon(Icons.add),
