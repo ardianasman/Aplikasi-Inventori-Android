@@ -1,9 +1,13 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_ambw/aboutus.dart';
+import 'package:project_ambw/dataClass/classInventori.dart';
+import 'package:project_ambw/dataClass/storageservice.dart';
 import 'package:project_ambw/detailstok.dart';
+import 'package:project_ambw/detailstokcard.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -13,6 +17,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  late List<DataInventori> list = [];
+  final Storage storage = Storage();
   @override
   Widget build(BuildContext context) {
     var _size = MediaQuery.of(context).size;
@@ -43,34 +49,101 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
-        body: GridView.count(
-          padding: EdgeInsets.all(16),
-          crossAxisCount:
-              MediaQuery.of(context).size.shortestSide < 600 ? 2 : 4,
-          crossAxisSpacing: 8.0,
-          mainAxisSpacing: 8.0,
-          children: [
-            _buildCard(
-              'Cookie mint',
-              '\$3.99',
-              'Assets/default-avatar.jpg',
-            ),
-            _buildCard(
-              'Cookie cream',
-              '\$5.99',
-              'Assets/default-avatar.jpg',
-            ),
-            _buildCard(
-              'Cookie classic',
-              '\$1.99',
-              'Assets/default-avatar.jpg',
-            ),
-            _buildCard(
-              'Cookie choco',
-              '\$2.99',
-              'Assets/default-avatar.jpg',
-            ),
-          ],
+        body: Container(
+          child: StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection("tabelInventori")
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Text("Somenthing Wrong");
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Text("Loading");
+              }
+              final data = snapshot.requireData;
+              list.clear();
+              for (int i = 0; i < data.size; i++) {
+                if (data.docs[i]['emailUser'] ==
+                    FirebaseAuth.instance.currentUser!.email.toString()) {
+                  list.add(DataInventori(
+                      nama: data.docs[i]["namaBarang"],
+                      foto: data.docs[i]["fotoBarang"],
+                      jenis: data.docs[i]["jenisBarang"],
+                      supplier: data.docs[i]["supplierBarang"],
+                      harga: data.docs[i]["hargaBarang"],
+                      jumlah: data.docs[i]["jumlahBarang"],
+                      tanggalmasuk: data.docs[i]["tanggalMasukBarang"]));
+                }
+              }
+              return GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount:
+                          MediaQuery.of(context).size.shortestSide < 600
+                              ? 2
+                              : 4),
+                  itemCount: list.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailStokCard(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.all(Radius.circular(16)),
+                          ),
+                          child: Column(
+                            children: [
+                              FutureBuilder(
+                                  future: storage.downloadURL(list[index].foto),
+                                  builder: (context,
+                                      AsyncSnapshot<String> snapshot) {
+                                    if (snapshot.connectionState ==
+                                            ConnectionState.done &&
+                                        snapshot.hasData) {
+                                      return CircleAvatar(
+                                        backgroundImage:
+                                            NetworkImage(snapshot.data!),
+                                        radius: 50,
+                                      );
+                                    } else {
+                                      return CircularProgressIndicator();
+                                    }
+                                  }),
+                              SizedBox(height: 7.0),
+                              Text(
+                                list[index].nama,
+                                style: TextStyle(
+                                  color: Color(0xFF575E67),
+                                  fontFamily: 'Varela',
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                              Text(
+                                list[index].harga,
+                                style: TextStyle(
+                                  color: Color(0xFFCC8053),
+                                  fontFamily: 'Varela',
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  });
+            },
+          ),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -83,71 +156,6 @@ class _HomeState extends State<Home> {
           },
           tooltip: 'Add data',
           child: Icon(Icons.add),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCard(String name, String price, String imgPath) {
-    return Padding(
-      padding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 5.0, right: 5.0),
-      child: InkWell(
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => DetailStok(),
-            ),
-          );
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
-                spreadRadius: 3.0,
-                blurRadius: 5.0,
-              ),
-            ],
-            color: Colors.white,
-          ),
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsets.only(top: 16),
-                child: Hero(
-                  tag: imgPath,
-                  child: Container(
-                    height: 75.0,
-                    width: 75.0,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(imgPath),
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 7.0),
-              Text(
-                name,
-                style: TextStyle(
-                  color: Color(0xFF575E67),
-                  fontFamily: 'Varela',
-                  fontSize: 14.0,
-                ),
-              ),
-              Text(
-                price,
-                style: TextStyle(
-                  color: Color(0xFFCC8053),
-                  fontFamily: 'Varela',
-                  fontSize: 14.0,
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

@@ -18,6 +18,7 @@ class DetailStok extends StatefulWidget {
 class _DetailStokState extends State<DetailStok> {
   TextEditingController namaController = TextEditingController();
   TextEditingController jenisController = TextEditingController();
+  TextEditingController supplierController = TextEditingController();
   TextEditingController jumlahController = TextEditingController();
   TextEditingController hargaController = TextEditingController();
   TextEditingController dateController = TextEditingController();
@@ -55,7 +56,7 @@ class _DetailStokState extends State<DetailStok> {
           'jenisBarang': jenisController.text,
           'jumlahBarang': jumlahController.text,
           'namaBarang': namaController.text,
-          'supplierBarang': jenisController.text,
+          'supplierBarang': supplierController.text,
           'tanggalMasukBarang': dateController.text,
         })
         .then((value) => print("Inventory Added"))
@@ -286,6 +287,7 @@ class _DetailStokState extends State<DetailStok> {
           );
         },
         onSelected: (selectedjenis) {
+          supplierController.text = selectedjenis.toString();
           print(selectedjenis);
         },
         optionsViewBuilder: (context, Function(String) onSelected, options) {
@@ -344,6 +346,7 @@ class _DetailStokState extends State<DetailStok> {
           );
         },
         onSelected: (selectedjenis) {
+          jenisController.text = selectedjenis.toString();
           print(selectedjenis);
         },
         optionsViewBuilder: (context, Function(String) onSelected, options) {
