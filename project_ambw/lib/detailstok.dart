@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, dead_code
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +52,7 @@ class _DetailStokState extends State<DetailStok> {
     // Call the user's CollectionReference to add a new user
     return inventoriref
         .add({
+          'emailUser': FirebaseAuth.instance.currentUser!.email.toString(),
           'fotoBarang': "",
           'hargaBarang': hargaController.text,
           'jenisBarang': jenisController.text,
