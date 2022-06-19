@@ -18,6 +18,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late List<DataInventori> list = [];
+  late List<String> docID = [];
   final Storage storage = Storage();
   @override
   Widget build(BuildContext context) {
@@ -74,6 +75,7 @@ class _HomeState extends State<Home> {
                       harga: data.docs[i]["hargaBarang"],
                       jumlah: data.docs[i]["jumlahBarang"],
                       tanggalmasuk: data.docs[i]["tanggalMasukBarang"]));
+                  docID.add(data.docs[i].id);
                 }
               }
               return GridView.builder(
@@ -89,7 +91,8 @@ class _HomeState extends State<Home> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => DetailStokCard(),
+                            builder: (context) =>
+                                DetailStokCard(ind: docID[index]),
                           ),
                         );
                       },
