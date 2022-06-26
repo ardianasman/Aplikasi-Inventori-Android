@@ -156,8 +156,12 @@ class _SupplierState extends State<Supplier> {
               for (int i = 0; i < data.size; i++) {
                 if (data.docs[i]['emailUser'] ==
                     FirebaseAuth.instance.currentUser!.email.toString()) {
-                  list.add(MyData(data.docs[i]['namaSupplier'],
-                      data.docs[i]['alamatSupplier']));
+                  list.add(
+                    MyData(
+                      data.docs[i]['namaSupplier'],
+                      data.docs[i]['alamatSupplier'],
+                    ),
+                  );
                 }
               }
               return ListView.builder(
