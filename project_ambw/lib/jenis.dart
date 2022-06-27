@@ -198,6 +198,7 @@ class _JenisState extends State<Jenis> {
                             ),
                           ]),
                       child: Card(
+                        elevation: 10,
                         child: ListTile(
                           onTap: () {
                             tmpController.text = list[index].NmJenis;

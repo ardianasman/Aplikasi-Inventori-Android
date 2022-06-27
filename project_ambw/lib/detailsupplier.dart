@@ -19,16 +19,39 @@ class _DetailSupplierState extends State<DetailSupplier> {
   CollectionReference supplierref =
       FirebaseFirestore.instance.collection("tabelSupplier");
 
-  Future<void> addSupplier() {
-    Navigator.pop(context);
-    return supplierref
-        .add({
-          'emailUser': FirebaseAuth.instance.currentUser!.email.toString(),
-          'namaSupplier': namaController.text,
-          'alamatSupplier': alamatController.text,
-        })
-        .then((value) => print("Supplier Added"))
-        .catchError((error) => print("Failed to add Supplier: $error"));
+  Future<void> addSupplier(listname) {
+    int c = 0;
+    for (int i = 0; i < listname.length; i++) {
+      if (listname[i].toString() == namaController.text.toString()) {
+        c = 1;
+      }
+    }
+    if (c == 0) {
+      Navigator.pop(context);
+      return supplierref
+          .add({
+            'emailUser': FirebaseAuth.instance.currentUser!.email.toString(),
+            'namaSupplier': namaController.text,
+            'alamatSupplier': alamatController.text,
+          })
+          .then((value) => print("Supplier Added"))
+          .catchError((error) => print("Failed to add Supplier: $error"));
+    } else {
+      return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Supplier name already exists!"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Ok!"),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override
@@ -37,6 +60,8 @@ class _DetailSupplierState extends State<DetailSupplier> {
     namaController.dispose();
     alamatController.dispose();
   }
+
+  List<String> listname = [];
 
   @override
   Widget build(BuildContext context) {
@@ -109,12 +134,26 @@ class _DetailSupplierState extends State<DetailSupplier> {
               ),
               Container(
                 padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    addSupplier();
-                  },
-                  child: Text("Add Supplier"),
-                ),
+                child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection("tabelSupplier")
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      final data = snapshot.requireData;
+                      listname.clear();
+                      if (snapshot.hasData) {
+                        for (int i = 0; i < data.size; i++) {
+                          listname.add(data.docs[i]['namaSupplier']);
+                        }
+                        return ElevatedButton(
+                          onPressed: () {
+                            addSupplier(listname);
+                          },
+                          child: Text("Add Supplier"),
+                        );
+                      }
+                      return Container();
+                    }),
               ),
             ]),
           ),

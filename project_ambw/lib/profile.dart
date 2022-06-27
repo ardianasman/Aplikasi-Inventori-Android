@@ -234,6 +234,7 @@ class _ProfileState extends State<Profile> {
                   height: 25,
                 ),
                 Container(
+                  padding: EdgeInsets.fromLTRB(25, 0, 25, 15),
                   child: Column(
                     children: [
                       Text(
@@ -315,19 +316,22 @@ class _ProfileState extends State<Profile> {
                     ],
                   ),
                 ),
-                ElevatedButton(
-                  child: const Text('Edit Profile'),
-                  onPressed: () {
-                    namaController.text = users['nama'];
-                    tmpnama = users['nama'];
-                    emailController.text = users['email'];
-                    nomerController.text = users['nomer'];
-                    gudangController.text = users['alamatgudang'];
-                    passwordController.text = users['password'];
-                    passwordConfirmController.text = users['password'];
-                    imagepath.text = users['imagepath'];
-                    editProfile();
-                  },
+                Container(
+                  padding: EdgeInsets.fromLTRB(25, 0, 25, 25),
+                  child: ElevatedButton(
+                    child: const Text('Edit Profile'),
+                    onPressed: () {
+                      namaController.text = users['nama'];
+                      tmpnama = users['nama'];
+                      emailController.text = users['email'];
+                      nomerController.text = users['nomer'];
+                      gudangController.text = users['alamatgudang'];
+                      passwordController.text = users['password'];
+                      passwordConfirmController.text = users['password'];
+                      imagepath.text = users['imagepath'];
+                      editProfile();
+                    },
+                  ),
                 ),
               ],
             ),

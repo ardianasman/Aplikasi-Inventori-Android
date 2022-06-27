@@ -18,16 +18,39 @@ class _DetailJenisState extends State<DetailJenis> {
   CollectionReference categoryref =
       FirebaseFirestore.instance.collection("tabelJenis");
 
-  Future<void> addCategory() {
-    Navigator.pop(context);
-    return categoryref
-        .add({
-          'emailUser': FirebaseAuth.instance.currentUser!.email.toString(),
-          'namaJenis': namaController.text,
-          'deskripsiJenis': deskripsiController.text,
-        })
-        .then((value) => print("Category Added"))
-        .catchError((error) => print("Failed to add Category: $error"));
+  Future<void> addCategory(listname) {
+    int c = 0;
+    for (int i = 0; i < listname.length; i++) {
+      if (listname[i].toString() == namaController.text.toString()) {
+        c = 1;
+      }
+    }
+    if (c == 0) {
+      Navigator.pop(context);
+      return categoryref
+          .add({
+            'emailUser': FirebaseAuth.instance.currentUser!.email.toString(),
+            'namaJenis': namaController.text,
+            'deskripsiJenis': deskripsiController.text,
+          })
+          .then((value) => print("Category Added"))
+          .catchError((error) => print("Failed to add Category: $error"));
+    } else {
+      return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Category name already exists!"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Ok!"),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override
@@ -37,6 +60,7 @@ class _DetailJenisState extends State<DetailJenis> {
     deskripsiController.dispose();
   }
 
+  List<String> listname = [];
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -108,12 +132,26 @@ class _DetailJenisState extends State<DetailJenis> {
               ),
               Container(
                 padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    addCategory();
-                  },
-                  child: Text("Add Category"),
-                ),
+                child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection("tabelJenis")
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      final data = snapshot.requireData;
+                      listname.clear();
+                      if (snapshot.hasData) {
+                        for (int i = 0; i < data.size; i++) {
+                          listname.add(data.docs[i]['namaJenis']);
+                        }
+                        return ElevatedButton(
+                          onPressed: () {
+                            addCategory(listname);
+                          },
+                          child: Text("Add Supplier"),
+                        );
+                      }
+                      return Container();
+                    }),
               ),
             ]),
           ),

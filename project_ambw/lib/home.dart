@@ -64,6 +64,7 @@ class _HomeState extends State<Home> {
               }
               final data = snapshot.requireData;
               list.clear();
+              docID.clear();
               for (int i = 0; i < data.size; i++) {
                 if (data.docs[i]['emailUser'] ==
                     FirebaseAuth.instance.currentUser!.email.toString()) {
@@ -87,6 +88,13 @@ class _HomeState extends State<Home> {
                   itemCount: list.length,
                   itemBuilder: (context, index) {
                     return GestureDetector(
+                      onLongPress: () {
+                        print(docID[index]);
+                        FirebaseFirestore.instance
+                            .collection("tabelInventori")
+                            .doc(docID[index].toString())
+                            .delete();
+                      },
                       onTap: () {
                         Navigator.push(
                           context,

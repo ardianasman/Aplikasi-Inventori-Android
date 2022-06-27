@@ -124,155 +124,153 @@ class _DetailStokState extends State<DetailStok> {
         body: Container(
           margin: EdgeInsets.all(8),
           child: Center(
-            child: Column(children: [
-              Container(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                child: TextFormField(
-                  controller: namaController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (val) {
-                    if (val!.isEmpty) {
-                      return "Input Nama!";
-                    }
-                  },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Nama Barang',
+            child: SingleChildScrollView(
+              child: Container(
+                child: Column(children: [
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                    child: TextFormField(
+                      controller: namaController,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (val) {
+                        if (val!.isEmpty) {
+                          return "Input Nama!";
+                        }
+                      },
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Nama Barang',
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                child: TextFormField(
-                  controller: jumlahController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (val) {
-                    if (val!.isEmpty) {
-                      return "Input Jumlah!";
-                    } else if (val.toString() == "0") {
-                      return "Cant be 0";
-                    }
-                  },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Jumlah Barang',
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                    child: TextFormField(
+                      controller: jumlahController,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (val) {
+                        if (val!.isEmpty) {
+                          return "Input Jumlah!";
+                        } else if (val.toString() == "0") {
+                          return "Cant be 0";
+                        }
+                      },
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Jumlah Barang',
+                      ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
+                    ),
                   ),
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                child: TextFormField(
-                  controller: hargaController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (val) {
-                    if (val!.isEmpty) {
-                      return "Input Harga!";
-                    } else if (val.toString() == "0") {
-                      return "Cant be 0";
-                    }
-                  },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Harga Barang',
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                    child: TextFormField(
+                      controller: hargaController,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (val) {
+                        if (val!.isEmpty) {
+                          return "Input Harga!";
+                        } else if (val.toString() == "0") {
+                          return "Cant be 0";
+                        }
+                      },
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Harga Barang',
+                      ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
+                    ),
                   ),
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
-                ),
-              ),
-              FutureBuilder(
-                  future: jenisref.get(),
-                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (c != 1) {
-                      if (!snapshot.hasData) {
-                        return CircularProgressIndicator();
-                      } else {
-                        for (int i = 0; i < snapshot.data!.docs.length; i++) {
-                          List<QueryDocumentSnapshot<Object?>> ds =
-                              snapshot.data!.docs;
-                          for (int j = 0; j < ds.length - 1; j++) {
+                  FutureBuilder(
+                      future: jenisref.get(),
+                      builder:
+                          (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (!snapshot.hasData) {
+                          return CircularProgressIndicator();
+                        } else {
+                          listjenis.clear();
+                          listdesc.clear();
+                          for (int i = 0; i < snapshot.data!.docs.length; i++) {
+                            List<QueryDocumentSnapshot<Object?>> ds =
+                                snapshot.data!.docs;
                             if (ds[i]["emailUser"] == "zzz@gmail.com") {
                               listjenis.add(ds[i]["namaJenis"]);
                               listdesc.add(ds[i]["deskripsiJenis"]);
                               c = 1;
                             }
                           }
+                          return showJenis();
                         }
-                        return showJenis();
-                      }
-                    } else {
-                      return showJenis();
-                    }
-                  }),
-              FutureBuilder(
-                  future: supplierref.get(),
-                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (cx != 1) {
-                      if (!snapshot.hasData) {
-                        return CircularProgressIndicator();
-                      } else {
-                        for (int i = 0; i < snapshot.data!.docs.length; i++) {
-                          List<QueryDocumentSnapshot<Object?>> ds =
-                              snapshot.data!.docs;
-                          for (int j = 0; j < ds.length - 1; j++) {
+                      }),
+                  FutureBuilder(
+                      future: supplierref.get(),
+                      builder:
+                          (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (!snapshot.hasData) {
+                          return CircularProgressIndicator();
+                        } else {
+                          listnamasup.clear();
+                          listalamatsup.clear();
+                          for (int i = 0; i < snapshot.data!.docs.length; i++) {
+                            List<QueryDocumentSnapshot<Object?>> ds =
+                                snapshot.data!.docs;
                             if (ds[i]["emailUser"] == "zzz@gmail.com") {
                               listnamasup.add(ds[i]["namaSupplier"]);
                               listalamatsup.add(ds[i]["alamatSupplier"]);
                               cx = 1;
                             }
                           }
+                          print(listnamasup);
+                          return showSupplier();
                         }
-                        print(listnamasup);
-                        return showSupplier();
-                      }
-                    } else {
-                      return showSupplier();
-                    }
-                  }),
-              Container(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                child: TextFormField(
-                  controller: dateController,
-                  readOnly: true,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    suffixIcon: GestureDetector(
-                      child: Icon(Icons.calendar_month),
-                      onTap: () async {
-                        DateTime? newDate = await showDatePicker(
-                            context: context,
-                            initialDate: now,
-                            firstDate: DateTime(2000),
-                            lastDate: DateTime(2100));
-                        if (newDate == null) {
-                          return;
-                        }
-                        setState(() {
-                          String formatteddatex =
-                              DateFormat('yyyy-MM-dd').format(newDate);
-                          dateController.text = formatteddatex;
-                          now = newDate;
-                        });
-                      },
+                      }),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                    child: TextFormField(
+                      controller: dateController,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        suffixIcon: GestureDetector(
+                          child: Icon(Icons.calendar_month),
+                          onTap: () async {
+                            DateTime? newDate = await showDatePicker(
+                                context: context,
+                                initialDate: now,
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime(2100));
+                            if (newDate == null) {
+                              return;
+                            }
+                            setState(() {
+                              String formatteddatex =
+                                  DateFormat('yyyy-MM-dd').format(newDate);
+                              dateController.text = formatteddatex;
+                              now = newDate;
+                            });
+                          },
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        addInventory();
+                      },
+                      child: Text("Add Stok"),
+                    ),
+                  ),
+                ]),
               ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    addInventory();
-                  },
-                  child: Text("Add Stok"),
-                ),
-              ),
-            ]),
+            ),
           ),
         ),
       ),

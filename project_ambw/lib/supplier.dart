@@ -179,15 +179,16 @@ class _SupplierState extends State<Supplier> {
                                   FirebaseFirestore.instance
                                       .collection("tabelSupplier")
                                       .where('namaSupplier',
-                                          isEqualTo: tmpController.text)
+                                          isEqualTo: list[index].NmSupplier)
                                       .where('alamatSupplier',
-                                          isEqualTo: alamatController.text)
+                                          isEqualTo: list[index].AlSupplier)
                                       .where('emailUser',
                                           isEqualTo: FirebaseAuth
                                               .instance.currentUser!.email
                                               .toString())
                                       .snapshots()
                                       .listen((event) {
+                                    print(event.docs[0].id.toString());
                                     FirebaseFirestore.instance
                                         .collection("tabelSupplier")
                                         .doc(event.docs[0].id.toString())
@@ -202,6 +203,7 @@ class _SupplierState extends State<Supplier> {
                             ),
                           ]),
                       child: Card(
+                        elevation: 10,
                         child: ListTile(
                           onTap: () {
                             namaController.text = list[index].NmSupplier;
