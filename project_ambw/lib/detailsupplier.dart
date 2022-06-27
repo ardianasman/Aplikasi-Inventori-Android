@@ -20,6 +20,7 @@ class _DetailSupplierState extends State<DetailSupplier> {
       FirebaseFirestore.instance.collection("tabelSupplier");
 
   Future<void> addSupplier() {
+    Navigator.pop(context);
     return supplierref
         .add({
           'emailUser': FirebaseAuth.instance.currentUser!.email.toString(),

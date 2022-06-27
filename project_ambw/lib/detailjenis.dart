@@ -19,6 +19,7 @@ class _DetailJenisState extends State<DetailJenis> {
       FirebaseFirestore.instance.collection("tabelJenis");
 
   Future<void> addCategory() {
+    Navigator.pop(context);
     return categoryref
         .add({
           'emailUser': FirebaseAuth.instance.currentUser!.email.toString(),

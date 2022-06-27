@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:project_ambw/aboutus.dart';
 import 'package:project_ambw/dataClass/classInventori.dart';
 import 'package:project_ambw/dataClass/classSupplier.dart';
@@ -167,16 +168,50 @@ class _SupplierState extends State<Supplier> {
               return ListView.builder(
                   itemCount: list.length,
                   itemBuilder: (context, index) {
-                    return Card(
-                      child: ListTile(
-                        onTap: () {
-                          namaController.text = list[index].NmSupplier;
-                          tmpController.text = list[index].NmSupplier;
-                          alamatController.text = list[index].AlSupplier;
-                          editSupplier();
-                        },
-                        title: Text(list[index].NmSupplier),
-                        subtitle: Text(list[index].AlSupplier),
+                    return Slidable(
+                      endActionPane: ActionPane(
+                          motion: DrawerMotion(),
+                          extentRatio: 0.2,
+                          children: [
+                            SlidableAction(
+                              onPressed: ((context) {
+                                setState(() {
+                                  FirebaseFirestore.instance
+                                      .collection("tabelSupplier")
+                                      .where('namaSupplier',
+                                          isEqualTo: tmpController.text)
+                                      .where('alamatSupplier',
+                                          isEqualTo: alamatController.text)
+                                      .where('emailUser',
+                                          isEqualTo: FirebaseAuth
+                                              .instance.currentUser!.email
+                                              .toString())
+                                      .snapshots()
+                                      .listen((event) {
+                                    FirebaseFirestore.instance
+                                        .collection("tabelSupplier")
+                                        .doc(event.docs[0].id.toString())
+                                        .delete();
+                                  });
+                                });
+                              }),
+                              backgroundColor: Color(0xFFFE4A49),
+                              foregroundColor: Colors.white,
+                              icon: Icons.delete,
+                              label: 'Delete',
+                            ),
+                          ]),
+                      child: Card(
+                        child: ListTile(
+                          onTap: () {
+                            namaController.text = list[index].NmSupplier;
+                            tmpController.text = list[index].NmSupplier;
+                            alamatController.text = list[index].AlSupplier;
+                            editSupplier();
+                          },
+                          title: Text(list[index].NmSupplier),
+                          subtitle: Text(list[index].AlSupplier),
+                        ),
                       ),
                     );
                   });
