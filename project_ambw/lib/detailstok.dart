@@ -49,20 +49,42 @@ class _DetailStokState extends State<DetailStok> {
   }
 
   Future<void> addInventory() {
-    // Call the user's CollectionReference to add a new user
-    return inventoriref
-        .add({
-          'emailUser': FirebaseAuth.instance.currentUser!.email.toString(),
-          'fotoBarang': "",
-          'hargaBarang': hargaController.text,
-          'jenisBarang': jenisController.text,
-          'jumlahBarang': jumlahController.text,
-          'namaBarang': namaController.text,
-          'supplierBarang': supplierController.text,
-          'tanggalMasukBarang': dateController.text,
-        })
-        .then((value) => print("Inventory Added"))
-        .catchError((error) => print("Failed to add Inventory: $error"));
+    if (hargaController.text == '' &&
+        jenisController.text == '' &&
+        jumlahController.text == '' &&
+        namaController.text == '' &&
+        supplierController.text == '') {
+      return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Please fill all fields!"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Ok!"),
+            ),
+          ],
+        ),
+      );
+    } else {
+      // Call the user's CollectionReference to add a new user
+      Navigator.pop(context);
+      return inventoriref
+          .add({
+            'emailUser': FirebaseAuth.instance.currentUser!.email.toString(),
+            'fotoBarang': "default-avatar.jpg",
+            'hargaBarang': hargaController.text,
+            'jenisBarang': jenisController.text,
+            'jumlahBarang': jumlahController.text,
+            'namaBarang': namaController.text,
+            'supplierBarang': supplierController.text,
+            'tanggalMasukBarang': dateController.text,
+          })
+          .then((value) => print("Inventory Added"))
+          .catchError((error) => print("Failed to add Inventory: $error"));
+    }
   }
 
   @override

@@ -98,48 +98,53 @@ class _HomeState extends State<Home> {
                       },
                       child: Container(
                         padding: EdgeInsets.all(8),
-                        child: Container(
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.all(Radius.circular(16)),
-                          ),
-                          child: Column(
-                            children: [
-                              FutureBuilder(
-                                  future: storage.downloadURL(list[index].foto),
-                                  builder: (context,
-                                      AsyncSnapshot<String> snapshot) {
-                                    if (snapshot.connectionState ==
-                                            ConnectionState.done &&
-                                        snapshot.hasData) {
-                                      return CircleAvatar(
-                                        backgroundImage:
-                                            NetworkImage(snapshot.data!),
-                                        radius: 50,
-                                      );
-                                    } else {
-                                      return CircularProgressIndicator();
-                                    }
-                                  }),
-                              SizedBox(height: 7.0),
-                              Text(
-                                list[index].nama,
-                                style: TextStyle(
-                                  color: Color(0xFF575E67),
-                                  fontFamily: 'Varela',
-                                  fontSize: 14.0,
+                        child: Card(
+                          elevation: 10,
+                          child: Container(
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(16)),
+                            ),
+                            child: Column(
+                              children: [
+                                FutureBuilder(
+                                    future:
+                                        storage.downloadURL(list[index].foto),
+                                    builder: (context,
+                                        AsyncSnapshot<String> snapshot) {
+                                      if (snapshot.connectionState ==
+                                              ConnectionState.done &&
+                                          snapshot.hasData) {
+                                        return CircleAvatar(
+                                          backgroundImage:
+                                              NetworkImage(snapshot.data!),
+                                          radius: 50,
+                                        );
+                                      } else {
+                                        return CircularProgressIndicator();
+                                      }
+                                    }),
+                                SizedBox(height: 7.0),
+                                Text(
+                                  list[index].nama,
+                                  style: TextStyle(
+                                    color: Color(0xFF575E67),
+                                    fontFamily: 'Varela',
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                list[index].harga,
-                                style: TextStyle(
-                                  color: Color(0xFFCC8053),
-                                  fontFamily: 'Varela',
-                                  fontSize: 14.0,
+                                Text(
+                                  list[index].harga,
+                                  style: TextStyle(
+                                    color: Color(0xFFCC8053),
+                                    fontFamily: 'Varela',
+                                    fontSize: 14.0,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),

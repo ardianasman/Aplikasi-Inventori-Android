@@ -180,66 +180,157 @@ class _ProfileState extends State<Profile> {
     return Center(
       child: Column(
         children: [
-          GestureDetector(
-            onTap: () async {
-              final results = await FilePicker.platform.pickFiles(
-                  allowMultiple: false,
-                  type: FileType.custom,
-                  allowedExtensions: ['png', 'jpg']);
-              if (results == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("No File Selected")));
-              }
+          Expanded(
+            child: ListView(
+              children: [
+                GestureDetector(
+                  onTap: () async {
+                    final results = await FilePicker.platform.pickFiles(
+                        allowMultiple: false,
+                        type: FileType.custom,
+                        allowedExtensions: ['png', 'jpg']);
+                    if (results == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("No File Selected")));
+                    }
 
-              final editpath = results!.files.single.path;
-              final editname = results.files.single.name;
+                    final editpath = results!.files.single.path;
+                    final editname = results.files.single.name;
 
-              final dtUpdate = DataUser(
-                  email: users['email'],
-                  nama: users['nama'],
-                  password: users['password'],
-                  nomer: users['nomer'],
-                  alamatgudang: users['alamatgudang'],
-                  imagepath: editname);
+                    final dtUpdate = DataUser(
+                        email: users['email'],
+                        nama: users['nama'],
+                        password: users['password'],
+                        nomer: users['nomer'],
+                        alamatgudang: users['alamatgudang'],
+                        imagepath: editname);
 
-              Database.updateData(user: dtUpdate);
+                    Database.updateData(user: dtUpdate);
 
-              storage
-                  .uploadFile(editpath.toString(), editname)
-                  .then((value) => print("storage success"));
-            },
-            child: FutureBuilder(
-              future: storage.downloadURL(users['imagepath']),
-              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                if (snapshot.connectionState == ConnectionState.done &&
-                    snapshot.hasData) {
-                  return CircleAvatar(
-                    backgroundImage: NetworkImage(snapshot.data!),
-                    radius: 75,
-                  );
-                } else {
-                  return CircularProgressIndicator();
-                }
-              },
+                    storage
+                        .uploadFile(editpath.toString(), editname)
+                        .then((value) => print("storage success"));
+                  },
+                  child: FutureBuilder(
+                    future: storage.downloadURL(users['imagepath']),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<String> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done &&
+                          snapshot.hasData) {
+                        return Container(
+                          padding: EdgeInsets.fromLTRB(0, 16, 0, 16),
+                          child: CircleAvatar(
+                            backgroundImage: NetworkImage(snapshot.data!),
+                            radius: 75,
+                          ),
+                        );
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 25,
+                ),
+                Container(
+                  child: Column(
+                    children: [
+                      Text(
+                        "Nama",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      TextField(
+                        controller: namaController,
+                        readOnly: true,
+                        textAlign: TextAlign.center,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Text(
+                        "Email",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      TextField(
+                        controller: emailController,
+                        readOnly: true,
+                        textAlign: TextAlign.center,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Text(
+                        "Nomer",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      TextField(
+                        controller: nomerController,
+                        readOnly: true,
+                        textAlign: TextAlign.center,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Text(
+                        "Alamat Gudang",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      TextField(
+                        controller: gudangController,
+                        readOnly: true,
+                        textAlign: TextAlign.center,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                    ],
+                  ),
+                ),
+                ElevatedButton(
+                  child: const Text('Edit Profile'),
+                  onPressed: () {
+                    namaController.text = users['nama'];
+                    tmpnama = users['nama'];
+                    emailController.text = users['email'];
+                    nomerController.text = users['nomer'];
+                    gudangController.text = users['alamatgudang'];
+                    passwordController.text = users['password'];
+                    passwordConfirmController.text = users['password'];
+                    imagepath.text = users['imagepath'];
+                    editProfile();
+                  },
+                ),
+              ],
             ),
-          ),
-          Text(users["nama"]),
-          Text(users["email"]),
-          Text(users["nomer"]),
-          Text(users["alamatgudang"]),
-          ElevatedButton(
-            child: const Text('Edit Profile'),
-            onPressed: () {
-              namaController.text = users['nama'];
-              tmpnama = users['nama'];
-              emailController.text = users['email'];
-              nomerController.text = users['nomer'];
-              gudangController.text = users['alamatgudang'];
-              passwordController.text = users['password'];
-              passwordConfirmController.text = users['password'];
-              imagepath.text = users['imagepath'];
-              editProfile();
-            },
           ),
         ],
       ),
@@ -284,6 +375,10 @@ class _ProfileState extends State<Profile> {
                 }
               }
               user = snapshot.data!.docs[tmpind];
+              namaController.text = user['nama'];
+              emailController.text = user['email'];
+              nomerController.text = user['nomer'];
+              gudangController.text = user['alamatgudang'];
               return displayProfile(user);
             } else {
               return CircularProgressIndicator();

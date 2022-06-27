@@ -210,6 +210,7 @@ class _DetailStokCardState extends State<DetailStokCard> {
                     listJenis.add(snapshot.data!.docs[i]['namaJenis']);
                   }
                 }
+                print(listJenis);
                 return SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: 75,
@@ -220,7 +221,8 @@ class _DetailStokCardState extends State<DetailStokCard> {
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton(
                           items: listJenis.map((e) {
-                            return DropdownMenuItem(value: e, child: Text(e));
+                            return DropdownMenuItem<String>(
+                                value: e, child: Text(e));
                           }).toList(),
                           onChanged: (val) {
                             jenisController.text = val.toString();
@@ -249,6 +251,7 @@ class _DetailStokCardState extends State<DetailStokCard> {
                     listSupplier.add(snapshot.data!.docs[i]['namaSupplier']);
                   }
                 }
+                print(listSupplier);
                 return SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: 75,
@@ -259,7 +262,8 @@ class _DetailStokCardState extends State<DetailStokCard> {
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton(
                           items: listSupplier.map((e) {
-                            return DropdownMenuItem(value: e, child: Text(e));
+                            return DropdownMenuItem<String>(
+                                value: e, child: Text(e));
                           }).toList(),
                           onChanged: (val) {
                             jenisController.text = val.toString();
