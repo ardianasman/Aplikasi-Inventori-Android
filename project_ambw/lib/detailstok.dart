@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -199,7 +200,9 @@ class _DetailStokState extends State<DetailStok> {
                           for (int i = 0; i < snapshot.data!.docs.length; i++) {
                             List<QueryDocumentSnapshot<Object?>> ds =
                                 snapshot.data!.docs;
-                            if (ds[i]["emailUser"] == "zzz@gmail.com") {
+                            if (ds[i]["emailUser"] ==
+                                FirebaseAuth.instance.currentUser?.email
+                                    .toString()) {
                               listjenis.add(ds[i]["namaJenis"]);
                               listdesc.add(ds[i]["deskripsiJenis"]);
                               c = 1;
@@ -220,7 +223,9 @@ class _DetailStokState extends State<DetailStok> {
                           for (int i = 0; i < snapshot.data!.docs.length; i++) {
                             List<QueryDocumentSnapshot<Object?>> ds =
                                 snapshot.data!.docs;
-                            if (ds[i]["emailUser"] == "zzz@gmail.com") {
+                            if (ds[i]["emailUser"] ==
+                                FirebaseAuth.instance.currentUser?.email
+                                    .toString()) {
                               listnamasup.add(ds[i]["namaSupplier"]);
                               listalamatsup.add(ds[i]["alamatSupplier"]);
                               cx = 1;

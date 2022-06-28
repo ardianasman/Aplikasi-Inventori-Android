@@ -26,12 +26,17 @@ class _DetailStokCardState extends State<DetailStokCard> {
   TextEditingController supplierController = TextEditingController();
   TextEditingController fotoController = TextEditingController();
 
+  TextEditingController tmpController = TextEditingController();
+
   late String? newVal = "";
 
   late List<String> listJenis = [];
   late List<String> listSupplier = [];
 
   late int c;
+  late int cj;
+  late int cs;
+  late int cd;
 
   final Storage storage = Storage();
 
@@ -41,6 +46,9 @@ class _DetailStokCardState extends State<DetailStokCard> {
   void initState() {
     super.initState();
     c = 0;
+    cj = 0;
+    cs = 0;
+    cd = 0;
   }
 
   @override
@@ -90,22 +98,29 @@ class _DetailStokCardState extends State<DetailStokCard> {
                       if (!snapshot.hasData) {
                         return Text("No Data");
                       } else if (snapshot.hasData) {
-                        var output = snapshot.data!.data();
-                        namaController.text = output!["namaBarang"].toString();
-                        jumlahController.text =
-                            output["jumlahBarang"].toString();
-                        hargaController.text = output["hargaBarang"].toString();
-                        fotoController.text = output["fotoBarang"].toString();
-                        jenisController.text = output["jenisBarang"].toString();
-                        supplierController.text =
-                            output["supplierBarang"].toString();
                         if (c == 0) {
-                          dateController.text =
-                              output["tanggalMasukBarang"].toString();
-                          c = 1;
+                          var output = snapshot.data!.data();
+                          namaController.text =
+                              output!["namaBarang"].toString();
+                          tmpController.text = output!["namaBarang"].toString();
+                          jumlahController.text =
+                              output["jumlahBarang"].toString();
+                          hargaController.text =
+                              output["hargaBarang"].toString();
+                          fotoController.text = output["fotoBarang"].toString();
+                          jenisController.text =
+                              output["jenisBarang"].toString();
+                          supplierController.text =
+                              output["supplierBarang"].toString();
+                          if (c == 0) {
+                            dateController.text =
+                                output["tanggalMasukBarang"].toString();
+                            c = 1;
+                          }
+                          now = DateFormat("yyyy-MM-dd")
+                              .parse(dateController.text);
+                          return showField();
                         }
-                        now =
-                            DateFormat("yyyy-MM-dd").parse(dateController.text);
                         return showField();
                       }
                       return Container();
@@ -118,40 +133,10 @@ class _DetailStokCardState extends State<DetailStokCard> {
     );
   }
 
-  Widget showImage(String users) {
-    return GestureDetector(
-      onTap: () async {
-        final results = await FilePicker.platform.pickFiles(
-            allowMultiple: false,
-            type: FileType.custom,
-            allowedExtensions: ['png', 'jpg']);
-        if (results == null) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(const SnackBar(content: Text("No File Selected")));
-        }
-      },
-      child: FutureBuilder(
-        future: storage.downloadURL(users),
-        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-          if (snapshot.connectionState == ConnectionState.done &&
-              snapshot.hasData) {
-            return CircleAvatar(
-              backgroundImage: NetworkImage(snapshot.data!),
-              radius: 75,
-            );
-          } else {
-            return CircularProgressIndicator();
-          }
-        },
-      ),
-    );
-  }
-
   Widget showField() {
     return Container(
       child: Column(
         children: [
-          showImage(fotoController.text),
           Container(
             padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
             child: TextFormField(
@@ -211,14 +196,43 @@ class _DetailStokCardState extends State<DetailStokCard> {
                     .collection("tabelJenis")
                     .snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  listJenis.clear();
-                  for (int i = 0; i < snapshot.data!.docs.length; i++) {
-                    if (snapshot.data!.docs[i]['emailUser'] ==
-                        FirebaseAuth.instance.currentUser!.email.toString()) {
-                      listJenis.add(snapshot.data!.docs[i]['namaJenis']);
+                  if (cj == 0) {
+                    listJenis.clear();
+                    for (int i = 0; i < snapshot.data!.docs.length; i++) {
+                      if (snapshot.data!.docs[i]['emailUser'] ==
+                          FirebaseAuth.instance.currentUser!.email.toString()) {
+                        listJenis.add(snapshot.data!.docs[i]['namaJenis']);
+                      }
                     }
+                    print(listJenis);
+                    cj = 1;
+                    return SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: 75,
+                      child: ButtonTheme(
+                        alignedDropdown: true,
+                        child: InputDecorator(
+                          decoration:
+                              InputDecoration(border: OutlineInputBorder()),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton(
+                              items: listJenis.map((e) {
+                                return DropdownMenuItem<String>(
+                                    value: e, child: Text(e));
+                              }).toList(),
+                              onChanged: (val) {
+                                setState(() {
+                                  jenisController.text = val.toString();
+                                });
+                              },
+                              value: jenisController.text,
+                              dropdownColor: Colors.red,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
                   }
-                  print(listJenis);
                   return SizedBox(
                     width: MediaQuery.of(context).size.width,
                     height: 75,
@@ -234,7 +248,9 @@ class _DetailStokCardState extends State<DetailStokCard> {
                                   value: e, child: Text(e));
                             }).toList(),
                             onChanged: (val) {
-                              jenisController.text = val.toString();
+                              setState(() {
+                                jenisController.text = val.toString();
+                              });
                             },
                             value: jenisController.text,
                             dropdownColor: Colors.red,
@@ -253,14 +269,44 @@ class _DetailStokCardState extends State<DetailStokCard> {
                     .collection("tabelSupplier")
                     .snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  listSupplier.clear();
-                  for (int i = 0; i < snapshot.data!.docs.length; i++) {
-                    if (snapshot.data!.docs[i]['emailUser'] ==
-                        FirebaseAuth.instance.currentUser!.email.toString()) {
-                      listSupplier.add(snapshot.data!.docs[i]['namaSupplier']);
+                  if (cs == 0) {
+                    listSupplier.clear();
+                    for (int i = 0; i < snapshot.data!.docs.length; i++) {
+                      if (snapshot.data!.docs[i]['emailUser'] ==
+                          FirebaseAuth.instance.currentUser!.email.toString()) {
+                        listSupplier
+                            .add(snapshot.data!.docs[i]['namaSupplier']);
+                      }
                     }
+                    print(listSupplier);
+                    cs = 1;
+                    return SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: 75,
+                      child: ButtonTheme(
+                        alignedDropdown: true,
+                        child: InputDecorator(
+                          decoration:
+                              InputDecoration(border: OutlineInputBorder()),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton(
+                              items: listSupplier.map((e) {
+                                return DropdownMenuItem<String>(
+                                    value: e, child: Text(e));
+                              }).toList(),
+                              onChanged: (val) {
+                                setState(() {
+                                  supplierController.text = val.toString();
+                                });
+                              },
+                              value: supplierController.text,
+                              dropdownColor: Colors.red,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
                   }
-                  print(listSupplier);
                   return SizedBox(
                     width: MediaQuery.of(context).size.width,
                     height: 75,
@@ -276,7 +322,9 @@ class _DetailStokCardState extends State<DetailStokCard> {
                                   value: e, child: Text(e));
                             }).toList(),
                             onChanged: (val) {
-                              jenisController.text = val.toString();
+                              setState(() {
+                                supplierController.text = val.toString();
+                              });
                             },
                             value: supplierController.text,
                             dropdownColor: Colors.red,
@@ -297,6 +345,7 @@ class _DetailStokCardState extends State<DetailStokCard> {
                 suffixIcon: GestureDetector(
                   child: Icon(Icons.calendar_month),
                   onTap: () async {
+                    cd = 0;
                     DateTime? newDate = await showDatePicker(
                         context: context,
                         initialDate: now,
@@ -306,15 +355,53 @@ class _DetailStokCardState extends State<DetailStokCard> {
                       return;
                     }
                     setState(() {
-                      String formatteddatex =
-                          DateFormat('yyyy-MM-dd').format(newDate);
-                      dateController.text = formatteddatex;
-                      now = newDate;
+                      if (cd == 0) {
+                        String formatteddatex =
+                            DateFormat('yyyy-MM-dd').format(newDate);
+                        dateController.text = formatteddatex;
+                        now = newDate;
+                        cd = 1;
+                      }
                     });
                   },
                 ),
               ),
             ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              CollectionReference inventoriref =
+                  FirebaseFirestore.instance.collection("tabelInventori");
+              inventoriref
+                  .where("namaBarang", isEqualTo: tmpController.text)
+                  .where("emailUser",
+                      isEqualTo:
+                          FirebaseAuth.instance.currentUser?.email.toString())
+                  .snapshots()
+                  .listen((event) {
+                print(event.docs[0].id.toString());
+                //inventoriref.doc(event.docs[0].id.toString()).delete();
+                inventoriref
+                    .doc(event.docs[0].id.toString())
+                    .update({
+                      'emailUser':
+                          FirebaseAuth.instance.currentUser!.email.toString(),
+                      'fotoBarang': "default-avatar.jpg",
+                      'hargaBarang': hargaController.text,
+                      'jenisBarang': jenisController.text,
+                      'jumlahBarang': jumlahController.text,
+                      'namaBarang': namaController.text,
+                      'supplierBarang': supplierController.text,
+                      'tanggalMasukBarang': dateController.text,
+                    })
+                    .then((value) => print("Inventory Added"))
+                    .catchError(
+                        (error) => print("Failed to add Inventory: $error"));
+              });
+
+              Navigator.pop(context);
+            },
+            child: Text("Edit Stok"),
           ),
         ],
       ),
