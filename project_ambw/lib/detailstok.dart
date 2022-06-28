@@ -1,19 +1,13 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, dead_code
 
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:project_ambw/aboutus.dart';
 import 'package:intl/intl.dart';
-import 'package:project_ambw/dataClass/storageservice.dart';
-import 'package:path/path.dart' as Path;
 
 class DetailStok extends StatefulWidget {
   const DetailStok({Key? key}) : super(key: key);
@@ -29,7 +23,6 @@ class _DetailStokState extends State<DetailStok> {
   TextEditingController jumlahController = TextEditingController();
   TextEditingController hargaController = TextEditingController();
   TextEditingController dateController = TextEditingController();
-  final Storage storage = Storage();
 
   DateTime now = DateTime.now();
   String formatteddate = DateFormat('yyyy-MM-dd').format(DateTime.now());
@@ -55,7 +48,7 @@ class _DetailStokState extends State<DetailStok> {
     dateController = new TextEditingController(text: formatteddate);
   }
 
-  Future<void> addInventory() async {
+  Future<void> addInventory() {
     if (hargaController.text == '' &&
         jenisController.text == '' &&
         jumlahController.text == '' &&
@@ -76,18 +69,12 @@ class _DetailStokState extends State<DetailStok> {
         ),
       );
     } else {
-      String fileName = Path.basename(_image!.path);
-      var firebaseStorageRef = FirebaseStorage.instance
-          .ref()
-          .child('avatar/$fileName')
-          .putFile(File(_image!.path));
-
       // Call the user's CollectionReference to add a new user
       Navigator.pop(context);
       return inventoriref
           .add({
             'emailUser': FirebaseAuth.instance.currentUser!.email.toString(),
-            'fotoBarang': fileName,
+            'fotoBarang': "default-avatar.jpg",
             'hargaBarang': hargaController.text,
             'jenisBarang': jenisController.text,
             'jumlahBarang': jumlahController.text,
@@ -98,23 +85,6 @@ class _DetailStokState extends State<DetailStok> {
           .then((value) => print("Inventory Added"))
           .catchError((error) => print("Failed to add Inventory: $error"));
     }
-  }
-
-  File? _image;
-  final imgpicker = ImagePicker();
-  void bukaGallery() async {
-    var image = await imgpicker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      setState(() {
-        _image = File(image.path);
-      });
-    }
-
-    // String namaFileGallery = _image!.path;
-    // // String basenamegallery = basename(namaFileGallery);
-    // print(namaFileGallery);
-    // uploadImageToFirebase();
-    // print(basenamegallery);
   }
 
   @override
@@ -157,28 +127,6 @@ class _DetailStokState extends State<DetailStok> {
             child: SingleChildScrollView(
               child: Container(
                 child: Column(children: [
-                  Padding(padding: EdgeInsets.all(8)),
-                  _image == null
-                      ? GestureDetector(
-                          child: CircleAvatar(
-                            backgroundImage:
-                                AssetImage('assets/default-avatar.jpg'),
-                            radius: 75,
-                          ),
-                          onTap: () {
-                            bukaGallery();
-                          },
-                        )
-                      : GestureDetector(
-                          child: CircleAvatar(
-                            backgroundImage: FileImage(_image!),
-                            radius: 75,
-                          ),
-                          onTap: () {
-                            bukaGallery();
-                            print(_image);
-                          },
-                        ),
                   Container(
                     padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                     child: TextFormField(

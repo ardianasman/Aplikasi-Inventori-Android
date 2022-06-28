@@ -1,16 +1,10 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:project_ambw/dataClass/classInventori.dart';
-import 'package:path/path.dart' as Path;
-import 'package:project_ambw/dataClass/dbservices.dart';
 
 import 'aboutus.dart';
 import 'dataClass/storageservice.dart';
@@ -31,9 +25,6 @@ class _DetailStokCardState extends State<DetailStokCard> {
   TextEditingController jenisController = TextEditingController();
   TextEditingController supplierController = TextEditingController();
   TextEditingController fotoController = TextEditingController();
-  CollectionReference inventoriref =
-      FirebaseFirestore.instance.collection("tabelInventori");
-  TextEditingController tmpController = TextEditingController();
 
   late String? newVal = "";
 
@@ -46,85 +37,10 @@ class _DetailStokCardState extends State<DetailStokCard> {
 
   DateTime now = DateTime.now();
 
-  File? _image;
-  final imgpicker = ImagePicker();
-  void bukaGallery() async {
-    var image = await imgpicker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      setState(() {
-        _image = File(image!.path);
-      });
-    }
-  }
-
   @override
   void initState() {
     super.initState();
     c = 0;
-  }
-
-  Future<void> editStockCard() async {
-    if (hargaController.text == '' &&
-        jenisController.text == '' &&
-        jumlahController.text == '' &&
-        namaController.text == '' &&
-        supplierController.text == '') {
-      return showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text("Please fill all fields!"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text("Ok!"),
-            ),
-          ],
-        ),
-      );
-    } else {
-      String fileName = Path.basename(_image!.path);
-      var firebaseStorageRef = FirebaseStorage.instance
-          .ref()
-          .child('avatar/$fileName')
-          .putFile(File(_image!.path));
-
-      int c = 0;
-
-      FirebaseFirestore.instance
-          .collection("tabelInventory")
-          .where('namaBarang', isEqualTo: tmpController.text)
-          .where('emailUser',
-              isEqualTo: FirebaseAuth.instance.currentUser!.email.toString())
-          .snapshots()
-          .listen((event) {
-        if (c == 0) {
-          final dtSupplier = DataInventori(
-            nama: namaController.text,
-            foto: fileName,
-            jenis: jenisController.text,
-            supplier: supplierController.text,
-            harga: hargaController.text,
-            jumlah: jumlahController.text,
-            tanggalmasuk: dateController.text,
-          );
-          Database.deleteSupplier(supplierid: event.docs[0].id.toString());
-          inventoriref.add({
-            'emailUser': FirebaseAuth.instance.currentUser!.email.toString(),
-            'fotoBarang': fileName,
-            'hargaBarang': hargaController.text,
-            'jenisBarang': jenisController.text,
-            'jumlahBarang': jumlahController.text,
-            'namaBarang': namaController.text,
-            'supplierBarang': supplierController.text,
-            'tanggalMasukBarang': dateController.text
-          });
-          c = 1;
-          Navigator.pop(context);
-        }
-      });
-    }
   }
 
   @override
@@ -202,34 +118,40 @@ class _DetailStokCardState extends State<DetailStokCard> {
     );
   }
 
+  Widget showImage(String users) {
+    return GestureDetector(
+      onTap: () async {
+        final results = await FilePicker.platform.pickFiles(
+            allowMultiple: false,
+            type: FileType.custom,
+            allowedExtensions: ['png', 'jpg']);
+        if (results == null) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text("No File Selected")));
+        }
+      },
+      child: FutureBuilder(
+        future: storage.downloadURL(users),
+        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done &&
+              snapshot.hasData) {
+            return CircleAvatar(
+              backgroundImage: NetworkImage(snapshot.data!),
+              radius: 75,
+            );
+          } else {
+            return CircularProgressIndicator();
+          }
+        },
+      ),
+    );
+  }
+
   Widget showField() {
     return Container(
       child: Column(
         children: [
-          Padding(padding: EdgeInsets.all(8)),
-          FutureBuilder(
-            future: storage.downloadURL(fotoController.text),
-            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-              if (snapshot.connectionState == ConnectionState.done &&
-                  snapshot.hasData) {
-                return Container(
-                  padding: EdgeInsets.fromLTRB(0, 16, 0, 16),
-                  child: GestureDetector(
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(snapshot.data!),
-                      radius: 75,
-                    ),
-                    onTap: () {
-                      bukaGallery();
-                      print(_image);
-                    },
-                  ),
-                );
-              } else {
-                return CircularProgressIndicator();
-              }
-            },
-          ),
+          showImage(fotoController.text),
           Container(
             padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
             child: TextFormField(
@@ -392,15 +314,6 @@ class _DetailStokCardState extends State<DetailStokCard> {
                   },
                 ),
               ),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.fromLTRB(10, 10, 10, 8),
-            child: ElevatedButton(
-              onPressed: () {
-                editStockCard();
-              },
-              child: Text("Edit Data"),
             ),
           ),
         ],
