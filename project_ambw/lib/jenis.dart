@@ -223,7 +223,7 @@ class _JenisState extends State<Jenis> {
                 builder: (context) => DetailJenis(),
               ),
             );
-            list.clear();
+            //list.clear();
           },
           tooltip: 'Add data',
           child: Icon(Icons.add),

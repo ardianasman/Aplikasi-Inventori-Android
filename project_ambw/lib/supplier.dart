@@ -227,7 +227,7 @@ class _SupplierState extends State<Supplier> {
                 builder: (context) => DetailSupplier(),
               ),
             );
-            list.clear();
+            //list.clear();
           },
           tooltip: 'Add data',
           child: Icon(Icons.add),
