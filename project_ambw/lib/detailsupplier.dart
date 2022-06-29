@@ -1,9 +1,11 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_ambw/aboutus.dart';
+import 'package:project_ambw/dataClass/storageservice.dart';
 
 class DetailSupplier extends StatefulWidget {
   const DetailSupplier({Key? key}) : super(key: key);
@@ -15,6 +17,7 @@ class DetailSupplier extends StatefulWidget {
 class _DetailSupplierState extends State<DetailSupplier> {
   TextEditingController namaController = TextEditingController();
   TextEditingController alamatController = TextEditingController();
+  TextEditingController barangController = TextEditingController();
   CollectionReference supplierref =
       FirebaseFirestore.instance.collection("tabelSupplier");
 
@@ -32,6 +35,8 @@ class _DetailSupplierState extends State<DetailSupplier> {
             'emailUser': FirebaseAuth.instance.currentUser!.email.toString(),
             'namaSupplier': namaController.text,
             'alamatSupplier': alamatController.text,
+            'foto': tmppath,
+            'namaBarang': barangController.text
           })
           .then((value) => print("Supplier Added"))
           .catchError((error) => print("Failed to add Supplier: $error"));
@@ -53,6 +58,43 @@ class _DetailSupplierState extends State<DetailSupplier> {
     }
   }
 
+  void picker() async {
+    final results = await FilePicker.platform.pickFiles(
+        allowMultiple: false,
+        type: FileType.custom,
+        allowedExtensions: ['png', 'jpg']);
+    if (results == null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("No File Selected")));
+    }
+
+    final editpath = results!.files.single.path;
+    final editname = results.files.single.name;
+    setState(() {
+      tmppath = editname;
+    });
+  }
+
+  Widget displayImage() {
+    return GestureDetector(
+        onTap: () {
+          picker();
+        },
+        child: FutureBuilder(
+            future: storage.downloadURL(tmppath),
+            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+              if (snapshot.hasData) {
+                print("tmpname = " + tmppath);
+                return CircleAvatar(
+                  backgroundImage: NetworkImage(snapshot.data!),
+                  radius: 75,
+                );
+              } else {
+                return CircularProgressIndicator();
+              }
+            }));
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -61,6 +103,8 @@ class _DetailSupplierState extends State<DetailSupplier> {
   }
 
   List<String> listname = [];
+  Storage storage = Storage();
+  String tmppath = "default-avatar.jpg";
 
   @override
   Widget build(BuildContext context) {
@@ -99,6 +143,7 @@ class _DetailSupplierState extends State<DetailSupplier> {
           margin: EdgeInsets.all(8),
           child: Center(
             child: Column(children: [
+              displayImage(),
               Container(
                 padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                 child: TextFormField(
@@ -128,6 +173,22 @@ class _DetailSupplierState extends State<DetailSupplier> {
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Alamat Supplier',
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                child: TextFormField(
+                  controller: barangController,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (val) {
+                    if (val!.isEmpty) {
+                      return "Input Barang!";
+                    }
+                  },
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Nama Barang',
                   ),
                 ),
               ),
