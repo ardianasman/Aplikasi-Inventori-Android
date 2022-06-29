@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:project_ambw/authpage.dart';
 import 'package:project_ambw/firebase_options.dart';
+import 'package:project_ambw/history.dart';
 import 'package:project_ambw/jenis.dart';
 import 'package:project_ambw/home.dart';
 import 'package:project_ambw/profile.dart';
@@ -77,6 +78,7 @@ class _MainPageState extends State<MainPage> {
   int currentindex = 0;
   final pageList = [
     Home(),
+    myHistory(),
     Supplier(),
     Jenis(),
     Profile(),
@@ -104,6 +106,11 @@ class _MainPageState extends State<MainPage> {
               icon: Icon(Icons.home),
               label: "Home",
               tooltip: "Home",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.history),
+              label: "History",
+              tooltip: "History",
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.factory),

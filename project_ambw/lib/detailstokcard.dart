@@ -102,7 +102,7 @@ class _DetailStokCardState extends State<DetailStokCard> {
                           var output = snapshot.data!.data();
                           namaController.text =
                               output!["namaBarang"].toString();
-                          tmpController.text = output!["namaBarang"].toString();
+                          tmpController.text = output["namaBarang"].toString();
                           jumlahController.text =
                               output["jumlahBarang"].toString();
                           hargaController.text =

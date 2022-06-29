@@ -17,6 +17,13 @@ class DetailStok extends StatefulWidget {
   State<DetailStok> createState() => _DetailStokState();
 }
 
+class myDataSupplier {
+  String namaBarang;
+  String namaSupplier;
+  String alamatSupplier;
+  myDataSupplier(this.namaBarang, this.namaSupplier, this.alamatSupplier);
+}
+
 class _DetailStokState extends State<DetailStok> {
   TextEditingController namaController = TextEditingController();
   TextEditingController jenisController = TextEditingController();
@@ -37,8 +44,9 @@ class _DetailStokState extends State<DetailStok> {
 
   late List<String> listjenis = [];
   late List<String> listdesc = [];
-  late List<String> listnamasup = [];
-  late List<String> listalamatsup = [];
+
+  late List<myDataSupplier> listAll = [];
+  late List<String> rightSupplier = [];
 
   late int c = 0;
   late int cx = 0;
@@ -122,158 +130,165 @@ class _DetailStokState extends State<DetailStok> {
             ),
           ],
         ),
-        body: Container(
-          margin: EdgeInsets.all(8),
-          child: Center(
-            child: SingleChildScrollView(
-              child: Container(
-                child: Column(children: [
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    child: TextFormField(
-                      controller: namaController,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (val) {
-                        if (val!.isEmpty) {
-                          return "Input Nama!";
-                        }
-                      },
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Nama Barang',
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    child: TextFormField(
-                      controller: jumlahController,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (val) {
-                        if (val!.isEmpty) {
-                          return "Input Jumlah!";
-                        } else if (val.toString() == "0") {
-                          return "Cant be 0";
-                        }
-                      },
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Jumlah Barang',
-                      ),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: <TextInputFormatter>[
-                        FilteringTextInputFormatter.digitsOnly
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    child: TextFormField(
-                      controller: hargaController,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (val) {
-                        if (val!.isEmpty) {
-                          return "Input Harga!";
-                        } else if (val.toString() == "0") {
-                          return "Cant be 0";
-                        }
-                      },
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Harga Barang',
-                      ),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: <TextInputFormatter>[
-                        FilteringTextInputFormatter.digitsOnly
-                      ],
-                    ),
-                  ),
-                  FutureBuilder(
-                      future: jenisref.get(),
-                      builder:
-                          (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                        if (!snapshot.hasData) {
-                          return CircularProgressIndicator();
-                        } else {
-                          listjenis.clear();
-                          listdesc.clear();
-                          for (int i = 0; i < snapshot.data!.docs.length; i++) {
-                            List<QueryDocumentSnapshot<Object?>> ds =
-                                snapshot.data!.docs;
-                            if (ds[i]["emailUser"] ==
-                                FirebaseAuth.instance.currentUser?.email
-                                    .toString()) {
-                              listjenis.add(ds[i]["namaJenis"]);
-                              listdesc.add(ds[i]["deskripsiJenis"]);
-                              c = 1;
-                            }
+        body: SingleChildScrollView(
+          child: Container(
+            margin: EdgeInsets.all(8),
+            child: Center(
+              child: SingleChildScrollView(
+                child: Container(
+                  child: Column(children: [
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      child: TextFormField(
+                        controller: namaController,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (val) {
+                          if (val!.isEmpty) {
+                            return "Input Nama!";
                           }
-                          return showJenis();
-                        }
-                      }),
-                  FutureBuilder(
-                      future: supplierref.get(),
-                      builder:
-                          (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                        if (!snapshot.hasData) {
-                          return CircularProgressIndicator();
-                        } else {
-                          listnamasup.clear();
-                          listalamatsup.clear();
-                          for (int i = 0; i < snapshot.data!.docs.length; i++) {
-                            List<QueryDocumentSnapshot<Object?>> ds =
-                                snapshot.data!.docs;
-                            if (ds[i]["emailUser"] ==
-                                FirebaseAuth.instance.currentUser?.email
-                                    .toString()) {
-                              listnamasup.add(ds[i]["namaSupplier"]);
-                              listalamatsup.add(ds[i]["alamatSupplier"]);
-                              cx = 1;
-                            }
-                          }
-                          print(listnamasup);
-                          return showSupplier();
-                        }
-                      }),
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    child: TextFormField(
-                      controller: dateController,
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        suffixIcon: GestureDetector(
-                          child: Icon(Icons.calendar_month),
-                          onTap: () async {
-                            DateTime? newDate = await showDatePicker(
-                                context: context,
-                                initialDate: now,
-                                firstDate: DateTime(2000),
-                                lastDate: DateTime(2100));
-                            if (newDate == null) {
-                              return;
-                            }
-                            setState(() {
-                              String formatteddatex =
-                                  DateFormat('yyyy-MM-dd').format(newDate);
-                              dateController.text = formatteddatex;
-                              now = newDate;
-                            });
-                          },
+                        },
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Nama Barang',
                         ),
                       ),
                     ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        addInventory();
-                      },
-                      child: Text("Add Stok"),
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      child: TextFormField(
+                        controller: jumlahController,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (val) {
+                          if (val!.isEmpty) {
+                            return "Input Jumlah!";
+                          } else if (val.toString() == "0") {
+                            return "Cant be 0";
+                          }
+                        },
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Jumlah Barang',
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                      ),
                     ),
-                  ),
-                ]),
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      child: TextFormField(
+                        controller: hargaController,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (val) {
+                          if (val!.isEmpty) {
+                            return "Input Harga!";
+                          } else if (val.toString() == "0") {
+                            return "Cant be 0";
+                          }
+                        },
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Harga Barang',
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                      ),
+                    ),
+                    FutureBuilder(
+                        future: jenisref.get(),
+                        builder:
+                            (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (!snapshot.hasData) {
+                            return CircularProgressIndicator();
+                          } else {
+                            listjenis.clear();
+                            listdesc.clear();
+                            for (int i = 0;
+                                i < snapshot.data!.docs.length;
+                                i++) {
+                              List<QueryDocumentSnapshot<Object?>> ds =
+                                  snapshot.data!.docs;
+                              if (ds[i]["emailUser"] ==
+                                  FirebaseAuth.instance.currentUser?.email
+                                      .toString()) {
+                                listjenis.add(ds[i]["namaJenis"]);
+                                listdesc.add(ds[i]["deskripsiJenis"]);
+                                c = 1;
+                              }
+                            }
+                            return showJenis();
+                          }
+                        }),
+                    FutureBuilder(
+                        future: supplierref.get(),
+                        builder:
+                            (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (!snapshot.hasData) {
+                            return CircularProgressIndicator();
+                          } else {
+                            listAll.clear();
+                            for (int i = 0;
+                                i < snapshot.data!.docs.length;
+                                i++) {
+                              List<QueryDocumentSnapshot<Object?>> ds =
+                                  snapshot.data!.docs;
+                              if (ds[i]["emailUser"] ==
+                                  FirebaseAuth.instance.currentUser?.email
+                                      .toString()) {
+                                listAll.add(myDataSupplier(
+                                    ds[i]["namaBarang"],
+                                    ds[i]["namaSupplier"],
+                                    ds[i]["alamatSupplier"]));
+                                cx = 1;
+                              }
+                            }
+                            print(listAll);
+                            return showSupplier();
+                          }
+                        }),
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      child: TextFormField(
+                        controller: dateController,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          suffixIcon: GestureDetector(
+                            child: Icon(Icons.calendar_month),
+                            onTap: () async {
+                              DateTime? newDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: now,
+                                  firstDate: DateTime(2000),
+                                  lastDate: DateTime(2100));
+                              if (newDate == null) {
+                                return;
+                              }
+                              setState(() {
+                                String formatteddatex =
+                                    DateFormat('yyyy-MM-dd').format(newDate);
+                                dateController.text = formatteddatex;
+                                now = newDate;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          addInventory();
+                        },
+                        child: Text("Add Stok"),
+                      ),
+                    ),
+                  ]),
+                ),
               ),
             ),
           ),
@@ -287,7 +302,12 @@ class _DetailStokState extends State<DetailStok> {
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
       child: Autocomplete(
         optionsBuilder: (TextEditingValue textEditingValue) {
-          return listnamasup.where((element) => element
+          for (int i = 0; i < listAll.length; i++) {
+            if (listAll[i].namaBarang == namaController.text) {
+              rightSupplier.add(listAll[i].namaSupplier);
+            }
+          }
+          return rightSupplier.where((element) => element
               .toLowerCase()
               .contains(textEditingValue.text.toLowerCase()));
         },
@@ -328,7 +348,7 @@ class _DetailStokState extends State<DetailStok> {
 
                 return ListTile(
                   title: Text(option.toString()),
-                  subtitle: Text(listalamatsup[index]),
+                  subtitle: Text(listAll[index].alamatSupplier),
                   onTap: () {
                     onSelected(option.toString());
                   },
