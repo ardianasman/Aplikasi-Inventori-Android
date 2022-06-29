@@ -7,7 +7,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:project_ambw/aboutus.dart';
-import 'package:project_ambw/dataClass/classInventori.dart';
 import 'package:project_ambw/dataClass/classSupplier.dart';
 import 'package:project_ambw/dataClass/dbservices.dart';
 import 'package:project_ambw/detailsupplier.dart';

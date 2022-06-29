@@ -8,6 +8,7 @@ import 'package:project_ambw/dataClass/classInventori.dart';
 import 'package:project_ambw/dataClass/storageservice.dart';
 import 'package:project_ambw/detailstok.dart';
 import 'package:project_ambw/detailstokcard.dart';
+import 'package:project_ambw/notification_api.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -20,6 +21,26 @@ class _HomeState extends State<Home> {
   late List<DataInventori> list = [];
   late List<String> docID = [];
   final Storage storage = Storage();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    NotificationApi.init();
+    listenNotifications();
+  }
+
+  void listenNotifications() =>
+      NotificationApi.onNotifications.stream.listen(onClickedNotification);
+
+  void onClickedNotification(String? payload) => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Home(),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     var _size = MediaQuery.of(context).size;
@@ -77,6 +98,15 @@ class _HomeState extends State<Home> {
                       jumlah: data.docs[i]["jumlahBarang"],
                       tanggalmasuk: data.docs[i]["tanggalMasukBarang"]));
                   docID.add(data.docs[i].id);
+                  int jumlah = int.parse(data.docs[i]["jumlahBarang"]);
+                  if (jumlah <= 5) {
+                    NotificationApi.showNotification(
+                      title: 'Warning Stok!',
+                      body:
+                          'Reminder for ${data.docs[i]["namaBarang"]} reach minimum stok!',
+                      payload: 'Inventory App Warning!',
+                    );
+                  }
                 }
               }
               return GridView.builder(
