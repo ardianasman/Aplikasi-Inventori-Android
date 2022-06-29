@@ -9,6 +9,7 @@ import 'package:project_ambw/authpage.dart';
 import 'package:project_ambw/firebase_options.dart';
 import 'package:project_ambw/jenis.dart';
 import 'package:project_ambw/home.dart';
+import 'package:project_ambw/keluar.dart';
 import 'package:project_ambw/profile.dart';
 import 'package:project_ambw/supplier.dart';
 
@@ -77,6 +78,7 @@ class _MainPageState extends State<MainPage> {
   int currentindex = 0;
   final pageList = [
     Home(),
+    Keluar(),
     Supplier(),
     Jenis(),
     Profile(),
@@ -104,6 +106,11 @@ class _MainPageState extends State<MainPage> {
               icon: Icon(Icons.home),
               label: "Home",
               tooltip: "Home",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.exposure_minus_1),
+              label: "Stock",
+              tooltip: "Stock",
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.factory),
