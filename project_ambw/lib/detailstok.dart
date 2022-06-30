@@ -50,14 +50,16 @@ class _DetailStokState extends State<DetailStok> {
 
   late int c = 0;
   late int cx = 0;
+  late String alamat = "";
 
   @override
   void initState() {
     super.initState();
     dateController = new TextEditingController(text: formatteddate);
+    namaController.text = "";
   }
 
-  Future<void> addInventory() {
+  Future<void> addInventory() async {
     if (hargaController.text == '' &&
         jenisController.text == '' &&
         jumlahController.text == '' &&
@@ -140,6 +142,9 @@ class _DetailStokState extends State<DetailStok> {
                     Container(
                       padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                       child: TextFormField(
+                        onEditingComplete: () {
+                          supplierController.text = "";
+                        },
                         controller: namaController,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (val) {
@@ -227,14 +232,16 @@ class _DetailStokState extends State<DetailStok> {
                         builder:
                             (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                           if (!snapshot.hasData) {
+                            print("Snapshot does not have data");
                             return CircularProgressIndicator();
                           } else {
+                            print("Snapshot has data");
+                            List<QueryDocumentSnapshot<Object?>> ds =
+                                snapshot.data!.docs;
                             listAll.clear();
                             for (int i = 0;
                                 i < snapshot.data!.docs.length;
                                 i++) {
-                              List<QueryDocumentSnapshot<Object?>> ds =
-                                  snapshot.data!.docs;
                               if (ds[i]["emailUser"] ==
                                   FirebaseAuth.instance.currentUser?.email
                                       .toString()) {
@@ -245,7 +252,6 @@ class _DetailStokState extends State<DetailStok> {
                                 cx = 1;
                               }
                             }
-                            print(listAll);
                             return showSupplier();
                           }
                         }),
@@ -302,7 +308,13 @@ class _DetailStokState extends State<DetailStok> {
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
       child: Autocomplete(
         optionsBuilder: (TextEditingValue textEditingValue) {
+          rightSupplier.clear();
           for (int i = 0; i < listAll.length; i++) {
+            print("Ini: " +
+                namaController.text +
+                " Ini: " +
+                listAll[i].namaBarang);
+            print("Ini nama barang: " + namaController.text);
             if (listAll[i].namaBarang == namaController.text) {
               rightSupplier.add(listAll[i].namaSupplier);
             }
@@ -348,7 +360,7 @@ class _DetailStokState extends State<DetailStok> {
 
                 return ListTile(
                   title: Text(option.toString()),
-                  subtitle: Text(listAll[index].alamatSupplier),
+                  subtitle: getAlamat(option.toString()),
                   onTap: () {
                     onSelected(option.toString());
                   },
@@ -418,5 +430,15 @@ class _DetailStokState extends State<DetailStok> {
         },
       ),
     );
+  }
+
+  getAlamat(String nm) {
+    String temp = "";
+    for (int i = 0; i < listAll.length; i++) {
+      if (listAll[i].namaSupplier == nm) {
+        temp = listAll[i].alamatSupplier;
+      }
+    }
+    return Text(temp);
   }
 }
