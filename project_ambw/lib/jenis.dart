@@ -66,30 +66,26 @@ class _JenisState extends State<Jenis> {
                         Container(
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                           child: ElevatedButton(
-                              child: Text('Save Data Jenis'),
-                              onPressed: () {
-                                int c = 0;
+                            child: Text('Save Data Jenis'),
+                            onPressed: () {
+                              int c = 0;
 
-                                FirebaseFirestore.instance
-                                    .collection("tabelJenis")
-                                    .where('namaJenis',
-                                        isEqualTo: tmpController.text)
-                                    .where('emailUser',
-                                        isEqualTo: FirebaseAuth
-                                            .instance.currentUser!.email
-                                            .toString())
-                                    .snapshots()
-                                    .listen((event) {
+                              FirebaseFirestore.instance
+                                  .collection("tabelJenis")
+                                  .where('namaJenis',
+                                      isEqualTo: tmpController.text)
+                                  .where('emailUser',
+                                      isEqualTo: FirebaseAuth
+                                          .instance.currentUser!.email
+                                          .toString())
+                                  .snapshots()
+                                  .listen(
+                                (event) {
+                                  print("masuk sini gan");
                                   if (c == 0) {
-                                    final dtJenis = DataJenis(
-                                        nama: namaController.text,
-                                        emailuser: FirebaseAuth
-                                            .instance.currentUser!.email
-                                            .toString(),
-                                        deskripsi: deskripsiController.text);
                                     Database.deleteJenis(
-                                        supplierid:
-                                            event.docs[0].id.toString());
+                                      supplierid: event.docs[0].id.toString(),
+                                    );
                                     jenisref.add({
                                       'emailUser': FirebaseAuth
                                           .instance.currentUser!.email
@@ -101,8 +97,10 @@ class _JenisState extends State<Jenis> {
                                     c = 1;
                                     Navigator.pop(context);
                                   }
-                                });
-                              }),
+                                },
+                              );
+                            },
+                          ),
                         ),
                       ],
                     ),
