@@ -147,7 +147,7 @@ class _DetailJenisState extends State<DetailJenis> {
                           onPressed: () {
                             addCategory(listname);
                           },
-                          child: Text("Add Supplier"),
+                          child: Text("Add Jenis"),
                         );
                       }
                       return Container();
