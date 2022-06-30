@@ -110,10 +110,12 @@ class _SupplierState extends State<Supplier> {
                                       namabarang: namabarangController.text,
                                       gambarSupplier: "",
                                     );
-                                    Database.deleteSupplier(
-                                        supplierid:
-                                            event.docs[0].id.toString());
-                                    supplierref.add({
+                                    // Database.deleteSupplier(
+                                    //     supplierid:
+                                    //         event.docs[0].id.toString());
+                                    supplierref
+                                        .doc(event.docs[0].id.toString())
+                                        .update({
                                       'emailUser': FirebaseAuth
                                           .instance.currentUser!.email
                                           .toString(),
@@ -220,6 +222,8 @@ class _SupplierState extends State<Supplier> {
                                   .collection("tabelSupplier")
                                   .doc(event.docs[0].id.toString())
                                   .delete();
+                              list.removeAt(index);
+                              print(list[0]);
                             });
                           });
                         }),

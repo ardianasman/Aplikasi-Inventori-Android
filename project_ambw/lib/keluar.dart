@@ -31,6 +31,24 @@ class _KeluarState extends State<Keluar> {
     c = 0;
   }
 
+  Future showdialog() => showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Success!"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                minusBarang.text = "";
+              },
+              child: Text(
+                "OK",
+              ),
+            )
+          ],
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -73,7 +91,9 @@ class _KeluarState extends State<Keluar> {
                           .snapshots(),
                       builder:
                           (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                        if (!snapshot.hasData) {
+                        print("xxx");
+                        if (!snapshot.hasData || snapshot.data!.size == 0) {
+                          print("no data");
                           return Text("No Data!");
                         } else {
                           listbarang.clear();
@@ -81,114 +101,122 @@ class _KeluarState extends State<Keluar> {
                             listbarang
                                 .add(snapshot.data!.docs[i]['namaBarang']);
                           }
-                          print(listbarang);
+                          print("listbarang" + listbarang.toString());
                           if (selectedBarang.text == "") {
                             selectedBarang.text = listbarang[0];
                           }
 
-                          return SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            height: 75,
-                            child: ButtonTheme(
-                              alignedDropdown: true,
-                              child: InputDecorator(
-                                decoration: InputDecoration(
-                                    border: OutlineInputBorder()),
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton(
-                                    items: listbarang.map((e) {
-                                      return DropdownMenuItem<String>(
-                                          value: e, child: Text(e));
-                                    }).toList(),
-                                    onChanged: (val) {
-                                      setState(() {
-                                        selectedBarang.text = val.toString();
-                                        print(selectedBarang.text);
-                                      });
-                                    },
-                                    value: selectedBarang.text,
-                                    dropdownColor: Colors.red,
+                          return Column(
+                            children: [
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                height: 75,
+                                child: ButtonTheme(
+                                  alignedDropdown: true,
+                                  child: InputDecorator(
+                                    decoration: InputDecoration(
+                                        border: OutlineInputBorder()),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton(
+                                        items: listbarang.map((e) {
+                                          return DropdownMenuItem<String>(
+                                              value: e, child: Text(e));
+                                        }).toList(),
+                                        onChanged: (val) {
+                                          setState(() {
+                                            selectedBarang.text =
+                                                val.toString();
+                                            print(selectedBarang.text);
+                                          });
+                                        },
+                                        value: selectedBarang.text,
+                                        dropdownColor: Colors.red,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
+                              Container(
+                                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                child: TextFormField(
+                                  controller: minusBarang,
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  validator: (val) {
+                                    if (val!.isEmpty) {
+                                      return "Input Jumlah!";
+                                    } else if (val.toString() == "0") {
+                                      return "Cant be 0";
+                                    }
+                                  },
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: 'Jumlah Keluar Barang',
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: <TextInputFormatter>[
+                                    FilteringTextInputFormatter.digitsOnly
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    CollectionReference inventoriref =
+                                        FirebaseFirestore.instance
+                                            .collection("tabelInventori");
+                                    inventoriref
+                                        .where("namaBarang",
+                                            isEqualTo: selectedBarang.text)
+                                        .where("emailUser",
+                                            isEqualTo: FirebaseAuth
+                                                .instance.currentUser?.email
+                                                .toString())
+                                        .snapshots()
+                                        .listen((event) {
+                                      final totalakhir = int.parse(event.docs[0]
+                                                  ["jumlahBarang"]
+                                              .toString()) -
+                                          int.parse(
+                                              minusBarang.text.toString());
+                                      if (c == 0) {
+                                        inventoriref
+                                            .doc(event.docs[0].id.toString())
+                                            .update({
+                                              'jumlahBarang':
+                                                  totalakhir.toString(),
+                                            })
+                                            .then((value) =>
+                                                print("Jumlah Updated"))
+                                            .catchError((error) => print(
+                                                "Failed to add Inventory: $error"));
+                                        c = 1;
+                                        CollectionReference historyref =
+                                            FirebaseFirestore.instance
+                                                .collection("tabelHistory");
+                                        DateTime date = DateTime.now();
+                                        print("date = " + date.toString());
+                                        historyref.add({
+                                          'namaBarang': selectedBarang.text,
+                                          'tanggal': date.toString(),
+                                          'tipe': 'keluar',
+                                          'emailUser': FirebaseAuth
+                                              .instance.currentUser?.email
+                                              .toString()
+                                        });
+                                        showdialog();
+                                      }
+                                    });
+                                  },
+                                  child: Text("Minus Stok"),
+                                ),
+                              ),
+                            ],
                           );
                         }
                       }),
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    child: TextFormField(
-                      controller: minusBarang,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (val) {
-                        if (val!.isEmpty) {
-                          return "Input Jumlah!";
-                        } else if (val.toString() == "0") {
-                          return "Cant be 0";
-                        }
-                      },
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Jumlah Keluar Barang',
-                      ),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: <TextInputFormatter>[
-                        FilteringTextInputFormatter.digitsOnly
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        CollectionReference inventoriref = FirebaseFirestore
-                            .instance
-                            .collection("tabelInventori");
-                        inventoriref
-                            .where("namaBarang", isEqualTo: selectedBarang.text)
-                            .where("emailUser",
-                                isEqualTo: FirebaseAuth
-                                    .instance.currentUser?.email
-                                    .toString())
-                            .snapshots()
-                            .listen((event) {
-                          final totalakhir = int.parse(
-                                  event.docs[0]["jumlahBarang"].toString()) -
-                              int.parse(minusBarang.text.toString());
-                          if (c == 0) {
-                            inventoriref
-                                .doc(event.docs[0].id.toString())
-                                .update({
-                                  'jumlahBarang': totalakhir.toString(),
-                                })
-                                .then((value) => print("Jumlah Updated"))
-                                .catchError((error) =>
-                                    print("Failed to add Inventory: $error"));
-                            c = 1;
-                            CollectionReference historyref = FirebaseFirestore
-                                .instance
-                                .collection("tabelHistory");
-                            DateTime date = DateTime.now();
-                            print("date = " + date.toString());
-                            historyref.add({
-                              'namaBarang': selectedBarang.text,
-                              'tanggal': date.toString(),
-                              'tipe': 'keluar',
-                              'emailUser': FirebaseAuth
-                                  .instance.currentUser?.email
-                                  .toString()
-                            });
-
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: ((context) => MainPage())));
-                          }
-                        });
-                      },
-                      child: Text("Minus Stok"),
-                    ),
-                  ),
                 ],
               ),
             ),

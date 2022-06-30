@@ -135,6 +135,9 @@ class _DetailJenisState extends State<DetailJenis> {
                 child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection("tabelJenis")
+                        .where("emailUser",
+                            isEqualTo: FirebaseAuth.instance.currentUser?.email
+                                .toString())
                         .snapshots(),
                     builder: (context, snapshot) {
                       final data = snapshot.requireData;
@@ -147,7 +150,7 @@ class _DetailJenisState extends State<DetailJenis> {
                           onPressed: () {
                             addCategory(listname);
                           },
-                          child: Text("Add Supplier"),
+                          child: Text("Add Jenis"),
                         );
                       }
                       return Container();

@@ -139,83 +139,89 @@ class _DetailSupplierState extends State<DetailSupplier> {
             ),
           ],
         ),
-        body: Container(
-          margin: EdgeInsets.all(8),
-          child: Center(
-            child: Column(children: [
-              displayImage(),
-              Container(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                child: TextFormField(
-                  controller: namaController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (val) {
-                    if (val!.isEmpty) {
-                      return "Input Nama!";
-                    }
-                  },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Nama Supplier',
-                  ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                child: TextFormField(
-                  controller: alamatController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (val) {
-                    if (val!.isEmpty) {
-                      return "Input Alamat!";
-                    }
-                  },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Alamat Supplier',
-                  ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                child: TextFormField(
-                  controller: barangController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (val) {
-                    if (val!.isEmpty) {
-                      return "Input Barang!";
-                    }
-                  },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Nama Barang',
-                  ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                child: StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection("tabelSupplier")
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      final data = snapshot.requireData;
-                      listname.clear();
-                      if (snapshot.hasData) {
-                        for (int i = 0; i < data.size; i++) {
-                          listname.add(data.docs[i]['namaSupplier']);
-                        }
-                        return ElevatedButton(
-                          onPressed: () {
-                            addSupplier(listname);
-                          },
-                          child: Text("Add Supplier"),
-                        );
+        body: SingleChildScrollView(
+          child: Container(
+            margin: EdgeInsets.all(8),
+            child: Center(
+              child: Column(children: [
+                displayImage(),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                  child: TextFormField(
+                    controller: namaController,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (val) {
+                      if (val!.isEmpty) {
+                        return "Input Nama!";
                       }
-                      return Container();
-                    }),
-              ),
-            ]),
+                    },
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Nama Supplier',
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                  child: TextFormField(
+                    controller: alamatController,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (val) {
+                      if (val!.isEmpty) {
+                        return "Input Alamat!";
+                      }
+                    },
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Alamat Supplier',
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                  child: TextFormField(
+                    controller: barangController,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (val) {
+                      if (val!.isEmpty) {
+                        return "Input Barang!";
+                      }
+                    },
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Nama Barang',
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                  child: StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection("tabelSupplier")
+                          .where('emailUser',
+                              isEqualTo: FirebaseAuth
+                                  .instance.currentUser?.email
+                                  .toString())
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        final data = snapshot.requireData;
+                        listname.clear();
+                        if (snapshot.hasData) {
+                          for (int i = 0; i < data.size; i++) {
+                            listname.add(data.docs[i]['namaSupplier']);
+                          }
+                          return ElevatedButton(
+                            onPressed: () {
+                              addSupplier(listname);
+                            },
+                            child: Text("Add Supplier"),
+                          );
+                        }
+                        return Container();
+                      }),
+                ),
+              ]),
+            ),
           ),
         ),
       ),
