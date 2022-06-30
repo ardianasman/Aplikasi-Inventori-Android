@@ -242,7 +242,6 @@ class _SupplierState extends State<Supplier> {
                           namaController.text = list[index].NmSupplier;
                           tmpController.text = list[index].NmSupplier;
                           alamatController.text = list[index].AlSupplier;
-                          namabarangController.text = list[index].NmBarang;
                           editSupplier();
                         },
                         leading: FutureBuilder(

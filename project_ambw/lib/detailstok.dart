@@ -47,7 +47,6 @@ class _DetailStokState extends State<DetailStok> {
 
   late List<myDataSupplier> listAll = [];
   late List<String> rightSupplier = [];
-  late List<String> rightalamatSupplier = [];
 
   late int c = 0;
   late int cx = 0;
@@ -231,8 +230,6 @@ class _DetailStokState extends State<DetailStok> {
                             return CircularProgressIndicator();
                           } else {
                             listAll.clear();
-                            rightSupplier.clear();
-                            rightalamatSupplier.clear();
                             for (int i = 0;
                                 i < snapshot.data!.docs.length;
                                 i++) {
@@ -245,13 +242,6 @@ class _DetailStokState extends State<DetailStok> {
                                     ds[i]["namaBarang"],
                                     ds[i]["namaSupplier"],
                                     ds[i]["alamatSupplier"]));
-
-                                // if (namaController.text ==
-                                //     ds[i]["namaBarang"]) {
-                                //   rightSupplier.add(ds[i]["namaSupplier"]);
-                                //   rightalamatSupplier
-                                //       .add(ds[i]["alamatSupplier"]);
-                                // }
                                 cx = 1;
                               }
                             }
@@ -315,10 +305,8 @@ class _DetailStokState extends State<DetailStok> {
           for (int i = 0; i < listAll.length; i++) {
             if (listAll[i].namaBarang == namaController.text) {
               rightSupplier.add(listAll[i].namaSupplier);
-              print("XX");
             }
           }
-          print("YYY");
           return rightSupplier.where((element) => element
               .toLowerCase()
               .contains(textEditingValue.text.toLowerCase()));
@@ -357,10 +345,10 @@ class _DetailStokState extends State<DetailStok> {
               itemCount: options.length,
               itemBuilder: (context, index) {
                 final option = options.elementAt(index);
-                print(option);
+
                 return ListTile(
                   title: Text(option.toString()),
-                  subtitle: Text(rightalamatSupplier[index]),
+                  subtitle: Text(listAll[index].alamatSupplier),
                   onTap: () {
                     onSelected(option.toString());
                   },

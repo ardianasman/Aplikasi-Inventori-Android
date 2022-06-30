@@ -72,7 +72,6 @@ class _DetailSupplierState extends State<DetailSupplier> {
     final editname = results.files.single.name;
     setState(() {
       tmppath = editname;
-      print("tmp = " + tmppath);
     });
   }
 
